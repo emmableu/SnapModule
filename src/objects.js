@@ -78,30 +78,64 @@ Date, FrameMorph, Math, MenuMorph, Morph, invoke, MorphicPreferences, WHITE,
 Object, PenMorph, Point, Rectangle, ScrollFrameMorph, SliderMorph, VideoMotion,
 StringMorph, TextMorph, contains, copy, degrees, detect, document, isNaN, Point,
 isString, newCanvas, nop, parseFloat, radians, window, modules, IDE_Morph,
-VariableDialogMorph, HTMLCanvasElement, Context, List, RingMorph, HandleMorph,
+// variableDialogMorph, HTMLCanvasElement, Context, List, RingMorph, HandleMorph,
 SpeechBubbleMorph, InputSlotMorph, isNil, FileReader, TableDialogMorph, String,
 BlockEditorMorph, BlockDialogMorph, PrototypeHatBlockMorph,  BooleanSlotMorph,
 localize, TableMorph, TableFrameMorph, normalizeCanvas, VectorPaintEditorMorph,
 AlignmentMorph, Process, WorldMap, copyCanvas, useBlurredShadows*/
 
+
+
+
+
+import { ZERO, nop, detect, BoxMorph, Color, Animation,
+   FrameMorph, MenuMorph, Morph,
+  TextMorph, contains, radians, CursorMorph,
+    MorphicPreferences, WHITE,
+   PenMorph, Rectangle, ScrollFrameMorph, SliderMorph,
+  StringMorph, copy, degrees, Point,
+  isString, newCanvas, modules, HandleMorph,
+  SpeechBubbleMorph, isNil,
+  localize, normalizeCanvas, copyCanvas, useBlurredShadows} from './morphic.js'
+
+
+import { SymbolMorph} from './symbols.js'
+
+import {PushButtonMorph, ToggleMorph,
+  DialogBoxMorph, InputFieldMorph, AlignmentMorph} from './widgets.js'
+
+import { BlockMorph,
+  CommandBlockMorph, HatBlockMorph,  MultiArgMorph,
+  ReporterBlockMorph, ScriptsMorph, SyntaxElementMorph,  RingMorph,
+  InputSlotMorph,  BooleanSlotMorph} from './blocks.js';
+
+import {
+  ThreadManager, VariableFrame, invoke, Context,  Process } from './threads.js';
+
+import {List} from './lists.js'
+
+import {WorldMap} from './maps'
+import {IDE_Morph} from "./gui";
+
 modules.objects = '2020-November-20';
 
-var SpriteMorph;
-var StageMorph;
-var SpriteBubbleMorph;
-var Costume;
-var SVG_Costume;
-var CostumeEditorMorph;
-var Sound;
-var Note;
-var Microphone;
-var CellMorph;
-var WatcherMorph;
-var StagePrompterMorph;
-var Note;
-var SpriteHighlightMorph;
 
-function isSnapObject(thing) {
+// var SpriteMorph;
+// var StageMorph;
+// var SpriteBubbleMorph;
+// export var Costume;
+// export var SVG_Costume;
+// var CostumeEditorMorph;
+// export var Sound;
+// export var Note;
+// export var Microphone;
+// var CellMorph;
+// var WatcherMorph;
+// var StagePrompterMorph;
+// export var Note;
+// var SpriteHighlightMorph;
+
+export function isSnapObject(thing) {
     return thing instanceof SpriteMorph || (thing instanceof StageMorph);
 }
 
@@ -916,12 +950,6 @@ SpriteMorph.prototype.initBlocks = function () {
             spec: '%asp at %loc',
             defaults: [['hue'], ['mouse-pointer']]
         },
-        reportAspect: {
-            type: 'reporter',
-            category: 'sensing',
-            spec: '%asp at %loc',
-            defaults: [['hue']]
-        },
         reportStackSize: {
             dev: true,
             type: 'reporter',
@@ -1667,7 +1695,7 @@ SpriteMorph.prototype.blockAlternatives = {
 
 // SpriteMorph instance creation
 
-function SpriteMorph(globals) {
+export function SpriteMorph(globals) {
     this.init(globals);
 }
 
@@ -1863,7 +1891,7 @@ SpriteMorph.prototype.appearIn = function (ide) {
 SpriteMorph.prototype.setName = function (string) {
     this.name = string || this.name;
     if (name != this.name) {
-        Trace.log('Sprite.setName', name);
+        // Trace.log('Sprite.setName', name);
     }
     this.version = Date.now();
 };
@@ -2595,7 +2623,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         button = new PushButtonMorph(
             null,
             function () {
-                new VariableDialogMorph(
+                new variableDialogMorph(
                     null,
                     addVar,
                     myself
@@ -2942,7 +2970,7 @@ SpriteMorph.prototype.freshPalette = function (category) {
             menu.addItem(
                 'show primitives',
                 function () {
-                    Trace.log('IDE.showPrimitives', ide.currentCategory);
+                    // Trace.log('IDE.showPrimitives', ide.currentCategory);
                     var hiddens = StageMorph.prototype.hiddenPrimitives,
                         defs = SpriteMorph.prototype.blocks;
                     Object.keys(hiddens).forEach(sel => {
@@ -3484,7 +3512,7 @@ SpriteMorph.prototype.reporterize = function (expressionString) {
 // SpriteMorph variable management
 
 SpriteMorph.prototype.addVariable = function (name, isGlobal) {
-    Trace.log('Sprite.addVariable', name);
+    // Trace.log('Sprite.addVariable', name);
     var ide = this.parentThatIsA(IDE_Morph);
     if (isGlobal) {
         this.globalVariables().addVar(name);
@@ -3498,7 +3526,7 @@ SpriteMorph.prototype.addVariable = function (name, isGlobal) {
 };
 
 SpriteMorph.prototype.deleteVariable = function (varName) {
-    Trace.log('Sprite.deleteVariable', varName);
+    // Trace.log('Sprite.deleteVariable', varName);
     var ide = this.parentThatIsA(IDE_Morph);
     if (!contains(this.inheritedVariableNames(true), varName)) {
         // check only shadowed variables
@@ -7441,7 +7469,7 @@ SpriteHighlightMorph.uber = Morph.prototype;
 
 // SpriteHighlightMorph instance creation:
 
-function SpriteHighlightMorph() {
+export function SpriteHighlightMorph() {
     this.init();
 }
 
@@ -7486,13 +7514,14 @@ StageMorph.prototype.enablePenLogging = false; // for SVG generation
 
 // StageMorph instance creation
 
-function StageMorph(globals) {
+export function StageMorph(globals) {
     this.init(globals);
 }
 
 StageMorph.prototype.init = function (globals) {
     this.name = localize('Stage');
-    this.guid = newGuid();
+    this.guid = "testGUID";
+    // this.guid = newGuid();
     this.instrument = null;
     this.threads = new ThreadManager();
     this.variables = new VariableFrame(globals || null, this);
@@ -8685,7 +8714,7 @@ StageMorph.prototype.blockTemplates = function (category) {
         button = new PushButtonMorph(
             null,
             function () {
-                new VariableDialogMorph(
+                new variableDialogMorph(
                     null,
                     addVar,
                     myself
@@ -9470,7 +9499,7 @@ SpriteBubbleMorph.uber = SpeechBubbleMorph.prototype;
 
 // SpriteBubbleMorph instance creation:
 
-function SpriteBubbleMorph(data, stage, isThought, isQuestion) {
+export function SpriteBubbleMorph(data, stage, isThought, isQuestion) {
     this.init(data, stage, isThought, isQuestion);
 }
 
@@ -9680,7 +9709,7 @@ SpriteBubbleMorph.prototype.fixLayout = function () {
 
 // Costume instance creation
 
-function Costume(canvas, name, rotationCenter, noFit) {
+export function Costume(canvas, name, rotationCenter, noFit) {
     this.contents = canvas ? normalizeCanvas(canvas, true)
             : newCanvas(null, true);
     if (!noFit) {this.shrinkToFit(this.maxExtent()); }
@@ -10057,7 +10086,7 @@ SVG_Costume.uber = Costume.prototype;
 
 // SVG_Costume instance creation
 
-function SVG_Costume(svgImage, name, rotationCenter) {
+export function SVG_Costume(svgImage, name, rotationCenter) {
     this.contents = svgImage;
     this.shapes = [];
     this.shrinkToFit(this.maxExtent());
@@ -10184,7 +10213,7 @@ CostumeEditorMorph.prototype.size = Costume.prototype.maxExtent();
 
 // CostumeEditorMorph instance creation
 
-function CostumeEditorMorph(costume) {
+export function CostumeEditorMorph(costume) {
     this.init(costume);
 }
 
@@ -10304,7 +10333,7 @@ CostumeEditorMorph.prototype.mouseMove
 
 // Sound instance creation
 
-function Sound(audio, name) {
+export function Sound(audio, name) {
     this.audio = audio; // mandatory
     this.name = name || "Sound";
 
@@ -10350,7 +10379,7 @@ Sound.prototype.toDataURL = function () {
 
 // Note instance creation
 
-function Note(pitch) {
+export function Note(pitch) {
     this.pitch = pitch === 0 ? 0 : pitch || 69;
     this.frequency = null; // alternative for playing a non-note frequency
     this.setupContext();
@@ -10500,7 +10529,7 @@ Note.prototype.pause = function () {
 // a significant lag, metering output is currently not supported by Firefox.
 // Safari... well, let's not talk about Safari :-)
 
-function Microphone() {
+export function Microphone() {
     // web audio components:
     this.audioContext = null; // shared with Note.prototype.audioContext
     this.sourceStream = null;
@@ -10791,7 +10820,7 @@ CellMorph.uber = BoxMorph.prototype;
 
 // CellMorph instance creation:
 
-function CellMorph(contents, color, idx, parentCell) {
+export function CellMorph(contents, color, idx, parentCell) {
     this.init(contents, color, idx, parentCell);
 }
 
@@ -11167,7 +11196,7 @@ WatcherMorph.uber = BoxMorph.prototype;
 
 // WatcherMorph instance creation:
 
-function WatcherMorph(label, color, target, getter, isHidden) {
+export function WatcherMorph(label, color, target, getter, isHidden) {
     this.init(label, color, target, getter, isHidden);
 }
 
@@ -11944,7 +11973,7 @@ StagePrompterMorph.uber = BoxMorph.prototype;
 
 // StagePrompterMorph instance creation:
 
-function StagePrompterMorph(question) {
+export function StagePrompterMorph(question) {
     this.init(question);
 }
 

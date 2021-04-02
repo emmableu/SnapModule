@@ -69,13 +69,38 @@ MorphicPreferences, FrameMorph, HandleMorph, DialogBoxMorph, StringMorph, isNil,
 SpriteMorph, Context, Costume, BlockEditorMorph, SymbolMorph, IDE_Morph, Sound,
 SyntaxElementMorph, MenuMorph, SpriteBubbleMorph, SpeechBubbleMorph, CellMorph,
 ListWatcherMorph, BoxMorph, Variable, isSnapObject, useBlurredShadows*/
+import {modules, Morph,
+  StringMorph, Point, MenuMorph,
+   detect,
+  MorphicPreferences, isNil, fontHeight
+  , HandleMorph,
+  BoxMorph,
+   SliderMorph, isString, FrameMorph,
+ SpeechBubbleMorph, useBlurredShadows
+} from './morphic'
+
+import {SymbolMorph} from './symbols'
+
+import {DialogBoxMorph,
+} from './widgets'
+
+import { SyntaxElementMorph
+} from './blocks'
+
+import {Variable} from "./threads";
+
+import {SpriteMorph, isSnapObject, Costume,  Sound, CellMorph
+} from './objects'
+import {ListWatcherMorph, List} from './lists'
+import {BlockEditorMorph} from './byob'
+
 
 modules.tables = '2020-October-06';
 
-var Table;
-var TableCellMorph;
-var TableMorph;
-var TableFrameMorph;
+// export var Table;
+// var TableCellMorph;
+// var TableMorph;
+// var TableFrameMorph;
 
 // Table /////////////////////////////////////////////////////////////
 
@@ -86,7 +111,7 @@ var TableFrameMorph;
     automatically displays 2D lists as tables.
 */
 
-function Table(cols, rows) {
+export function Table(cols, rows) {
     this.colCount = +cols;
     this.rowCount = +rows;
     this.colNames = [];
@@ -288,7 +313,7 @@ TableCellMorph.prototype.listSymbol = function () {
 
 // TableCellMorph instance creation:
 
-function TableCellMorph(data, extent, isLabel) {
+export function TableCellMorph(data, extent, isLabel) {
     this.init(data, extent, isLabel);
 }
 
@@ -487,7 +512,7 @@ TableMorph.prototype.highContrast = false;
 
 // TableMorph instance creation:
 
-function TableMorph(
+export function TableMorph(
     table,
     // optional parameters below this line
     scrollBarSize,
@@ -1143,7 +1168,7 @@ TableFrameMorph.uber = Morph.prototype;
 
 // TableFrameMorph instance creation:
 
-function TableFrameMorph(tableMorph, noResize) {
+export function TableFrameMorph(tableMorph, noResize) {
     this.init(tableMorph, noResize);
 }
 
@@ -1204,7 +1229,7 @@ TableDialogMorph.uber = DialogBoxMorph.prototype;
 
 // TableDialogMorph instance creation:
 
-function TableDialogMorph(data, globalColWidth, colWidths, rowHeight) {
+export function TableDialogMorph(data, globalColWidth, colWidths, rowHeight) {
     this.init(data, globalColWidth, colWidths, rowHeight);
 }
 

@@ -67,12 +67,14 @@
 
 // Global stuff ////////////////////////////////////////////////////////
 
+import {modules, detect, isNil} from "./morphic";
+
 modules.xml = '2020-April-27';
 
 // Declarations
 
-var ReadStream;
-var XML_Element;
+// export var ReadStream;
+// export var XML_Element;
 
 // ReadStream ////////////////////////////////////////////////////////////
 
@@ -80,7 +82,7 @@ var XML_Element;
 
 // ReadStream instance creation:
 
-function ReadStream(arrayOrString) {
+export function ReadStream(arrayOrString) {
     this.contents = arrayOrString || '';
     this.index = 0;
 }
@@ -159,7 +161,7 @@ XML_Element.prototype.indentation = '  ';
 
 // XML_Element instance creation:
 
-function XML_Element(tag, contents, parent) {
+export function XML_Element(tag, contents, parent) {
     this.init(tag, contents, parent);
 }
 

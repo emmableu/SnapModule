@@ -38,12 +38,11 @@
 */
 
 /*global modules, Morph, Point, radians, ZERO, BLACK*/
-
+import {modules, Morph, Point, radians, ZERO, BLACK} from './morphic';
 // Global stuff ////////////////////////////////////////////////////////
 
 modules.symbols = '2020-October-07';
 
-var SymbolMorph;
 
 // SymbolMorph //////////////////////////////////////////////////////////
 
@@ -148,7 +147,7 @@ SymbolMorph.prototype.names = [
 
 // SymbolMorph instance creation:
 
-function SymbolMorph(name, size, color, shadowOffset, shadowColor) {
+export function SymbolMorph(name, size, color, shadowOffset, shadowColor) {
     this.init(name, size, color, shadowOffset, shadowColor);
 }
 

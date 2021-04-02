@@ -45,21 +45,21 @@
 // Global settings /////////////////////////////////////////////////////
 
 /*global modules, contains*/
-
+import {modules, contains} from './morphic.js'
 modules.locale = '2020-November-20';
 
 // Global stuff
 
-var Localizer;
-var SnapTranslator = new Localizer();
+// export var Localizer;
+export var SnapTranslator = new Localizer();
 
-function localize(string) {
+export function localize(string) {
     return SnapTranslator.translate(string);
 }
 
 // Localizer /////////////////////////////////////////////////////////////
 
-function Localizer(language, dict) {
+export function Localizer(language, dict) {
     this.language = language || 'en';
     this.dict = dict || {};
 }

@@ -158,37 +158,67 @@ CustomCommandBlockMorph, SymbolMorph, ToggleButtonMorph, DialMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
+
+
+
+
+
+import {BoxMorph,
+  Color, ColorPaletteMorph, FrameMorph, HandleMorph, MenuMorph,
+  Morph, MorphicPreferences, Point, ScrollFrameMorph, ShadowMorph, ZERO,
+   StringMorph, TextMorph, contains, degrees, detect,
+   getDocumentPositionOf, isString, newCanvas, nop,
+  radians, useBlurredShadows, SpeechBubbleMorph, modules,
+  fontHeight, Rectangle,
+  localize, isNil, WHITE, BLACK, CLEAR,
+  DialMorph} from './morphic.js'
+
+import {SymbolMorph} from './symbols.js'
+
+import {PianoMenuMorph,  DialogBoxMorph,
+   PushButtonMorph,  AlignmentMorph,
+    ToggleButtonMorph
+} from './widgets.js'
+import {SpriteMorph,
+   StageMorph, Sound,
+  Costume,
+  isSnapObject} from "./objects";
+
+// import { CustomCommandBlockMorph, BlockInputFragmentMorph,
+//   BlockDialogMorph, BlockEditorMorph, PrototypeHatBlockMorph} from './byob'
+import {IDE_Morph} from "./gui";
+
 modules.blocks = '2020-November-17';
 
-var SyntaxElementMorph;
-var BlockMorph;
-var BlockLabelMorph;
-var BlockSymbolMorph;
-var CommandBlockMorph;
-var ReporterBlockMorph;
-var ScriptsMorph;
-var ArgMorph;
-var CommandSlotMorph;
-var CSlotMorph;
-var InputSlotMorph;
-var InputSlotStringMorph;
-var InputSlotTextMorph;
-var BooleanSlotMorph;
-var ArrowMorph;
-var ColorSlotMorph;
-var HatBlockMorph;
-var BlockHighlightMorph;
-var MultiArgMorph;
-var TemplateSlotMorph;
-var FunctionSlotMorph;
-var ReporterSlotMorph;
-var RingMorph;
-var RingCommandSlotMorph;
-var RingReporterSlotMorph;
-var CommentMorph;
-var ArgLabelMorph;
-var TextSlotMorph;
-var ScriptFocusMorph;
+// var SyntaxElementMorph;
+// var BlockMorph;
+// var BlockLabelMorph;
+// var BlockSymbolMorph;
+// var CommandBlockMorph;
+// var ReporterBlockMorph;
+// var ScriptsMorph;
+// var ArgMorph;
+// var CommandSlotMorph;
+// var CSlotMorph;
+// var InputSlotMorph;
+// var InputSlotStringMorph;
+// var InputSlotTextMorph;
+// var BooleanSlotMorph;
+// var ArrowMorph;
+// var ColorSlotMorph;
+// var HatBlockMorph;
+// var BlockHighlightMorph;
+// var MultiArgMorph;
+// var TemplateSlotMorph;
+// var FunctionSlotMorph;
+// var ReporterSlotMorph;
+// var RingMorph;
+// var RingCommandSlotMorph;
+// var RingReporterSlotMorph;
+// var CommentMorph;
+// var ArgLabelMorph;
+// var TextSlotMorph;
+// var ScriptFocusMorph;
 
 // SyntaxElementMorph //////////////////////////////////////////////////
 
@@ -302,7 +332,7 @@ SyntaxElementMorph.prototype.alpha = 1;
 
 // SyntaxElementMorph instance creation:
 
-function SyntaxElementMorph() {
+export function SyntaxElementMorph() {
     this.init();
 }
 
@@ -2311,7 +2341,7 @@ BlockLabelMorph.prototype = new StringMorph();
 BlockLabelMorph.prototype.constructor = BlockLabelMorph;
 BlockLabelMorph.uber = StringMorph.prototype;
 
-function BlockLabelMorph(
+export function BlockLabelMorph(
     text,
     fontSize,
     fontStyle,
@@ -2368,7 +2398,7 @@ BlockSymbolMorph.prototype = new SymbolMorph();
 BlockSymbolMorph.prototype.constructor = BlockSymbolMorph;
 BlockSymbolMorph.uber = SymbolMorph.prototype;
 
-function BlockSymbolMorph(name, size, color, shadowOffset, shadowColor) {
+export function BlockSymbolMorph(name, size, color, shadowOffset, shadowColor) {
     this.init(name, size, color, shadowOffset, shadowColor);
 }
 
@@ -2563,7 +2593,7 @@ BlockMorph.prototype.toggleSnapSound = function () {
 
 // BlockMorph instance creation:
 
-function BlockMorph() {
+export function BlockMorph() {
     this.init();
 }
 
@@ -2624,7 +2654,7 @@ BlockMorph.prototype.blockId = function() {
 };
 
 BlockMorph.prototype.userDestroy = function() {
-    Trace.log('Block.userDestroy', this.blockId());
+    // Trace.log('Block.userDestroy', this.blockId());
 };
 
 // BlockMorph spec:
@@ -2792,10 +2822,10 @@ BlockMorph.prototype.userMenu = function () {
         new DialogBoxMorph(
             myself,
             function(arg) {
-                Trace.log('Block.rename', {
-                    'id': myself.blockId(),
-                    'name': arg,
-                });
+                // Trace.log('Block.rename', {
+                //     'id': myself.blockId(),
+                //     'name': arg,
+                // });
                 myself.userSetSpec(arg);
             },
             myself
@@ -3093,7 +3123,7 @@ BlockMorph.prototype.userMenu = function () {
     menu.addItem(
         "script pic...",
         () => {
-            Trace.log('Block.scriptPic', myself.blockId());
+            // Trace.log('Block.scriptPic', myself.blockId());
             var ide = this.parentThatIsA(IDE_Morph) ||
                 this.parentThatIsA(BlockEditorMorph).target.parentThatIsA(
                     IDE_Morph
@@ -3302,7 +3332,7 @@ BlockMorph.prototype.hidePrimitive = function () {
         dict,
         cat;
     if (!ide) {return; }
-    Trace.log('Block.hidePrimitive', this.blockId());
+    // Trace.log('Block.hidePrimitive', this.blockId());
     StageMorph.prototype.hiddenPrimitives[this.selector] = true;
     dict = {
         doWarp: 'control',
@@ -3342,8 +3372,8 @@ BlockMorph.prototype.toggleTransientVariable = function () {
     if (!varFrame) {return; }
     varFrame.vars[this.blockSpec].isTransient =
         !(varFrame.vars[this.blockSpec].isTransient);
-    Trace.log('Block.toggleTransientVariable',
-        varFrame.vars[this.blockSpec].isTransient);
+    // Trace.log('Block.toggleTransientVariable',
+    //     varFrame.vars[this.blockSpec].isTransient);
 };
 
 BlockMorph.prototype.deleteBlock = function () {
@@ -3389,7 +3419,7 @@ BlockMorph.prototype.deleteBlock = function () {
 };
 
 BlockMorph.prototype.ringify = function () {
-    Trace.log('Block.ringify', this.blockId());
+    // Trace.log('Block.ringify', this.blockId());
     // wrap a Ring around me
     var ring, top, center,
         target = this.selectForEdit(); // copy-on-edit
@@ -3423,7 +3453,7 @@ BlockMorph.prototype.ringify = function () {
 };
 
 BlockMorph.prototype.unringify = function () {
-    Trace.log('Block.unringify', this.blockId());
+    // Trace.log('Block.unringify', this.blockId());
     // remove a Ring around me, if any
     var ring, top, center, scripts, block,
         target = this.selectForEdit(); // copy-on-edit
@@ -3485,10 +3515,10 @@ BlockMorph.prototype.relabel = function (alternativeSelectors) {
             block.doWithAlpha(1, () => block.fullImage()),
             () => {
                 this.setSelector(selector, -offset)
-                Trace.log('Block.relabel', {
-                    'id': this.blockId(),
-                    'selector': sel,
-                });
+                // Trace.log('Block.relabel', {
+                //     'id': this.blockId(),
+                //     'selector': sel,
+                // });
             }
         );
     });
@@ -3618,12 +3648,12 @@ BlockMorph.prototype.restoreInputs = function (oldInputs, offset = 0) {
 };
 
 BlockMorph.prototype.showHelp = function () {
-    Trace.log('Block.showHelp',
+    // Trace.log('Block.showHelp',
         // Since some buttons duplicate the showHelp function, we can show their
         // selector in lieu of a full blockID (so they all have a selector)
-        (this.blockId ? this.blockId() : null) || {
-            selector: this.selector,
-        });
+        // (this.blockId ? this.blockId() : null) || {
+        //     selector: this.selector,
+        // });
     var myself = this,
         ide = this.parentThatIsA(IDE_Morph),
         blockEditor,
@@ -3976,11 +4006,11 @@ BlockMorph.prototype.refactorThisVar = function (justTheTemplate) {
     );
 
     function renameVarTo (newName) {
-        Trace.log('Block.refactorVar', {
-            'id': myself.blockId(),
-            'oldName': oldName,
-            'newName': newName,
-        });
+        // Trace.log('Block.refactorVar', {
+        //     'id': myself.blockId(),
+        //     'oldName': oldName,
+        //     'newName': newName,
+        // });
         if (this.parent instanceof SyntaxElementMorph) {
             if (this.parentThatIsA(BlockEditorMorph)) {
                 this.doRefactorBlockParameter(
@@ -4002,10 +4032,10 @@ BlockMorph.prototype.refactorThisVar = function (justTheTemplate) {
 };
 
 BlockMorph.prototype.varExistsError = function (ide, where) {
-    Trace.log('Block.refactorVarError', {
-        'id': this.blockId(),
-        'where': where,
-    });
+    // Trace.log('Block.refactorVarError', {
+    //     'id': this.blockId(),
+    //     'where': where,
+    // });
     ide.inform(
         'Variable exists',
         'A variable with this name already exists ' +
@@ -4697,7 +4727,7 @@ BlockMorph.prototype.fullCopy = function () {
 };
 
 BlockMorph.prototype.reactToTemplateCopy = function () {
-    Trace.log('Block.created', this.blockId());
+    // Trace.log('Block.created', this.blockId());
     if (this.isLocalVarTemplate) {
     	this.isLocalVarTemplate = null;
         this.fixLayout();
@@ -4739,9 +4769,9 @@ BlockMorph.prototype.mouseClickLeft = function () {
         if (stage) {
             var process = stage.threads.findProcess(top);
             if (process && !process.readyToTerminate) {
-                Trace.log('Block.clickStopRun', top.blockId());
+                // Trace.log('Block.clickStopRun', top.blockId());
             } else {
-                Trace.log('Block.clickRun', top.blockId());
+                // Trace.log('Block.clickRun', top.blockId());
             }
             // Useful for debugging
             window.lastRun = top;
@@ -4844,10 +4874,10 @@ BlockMorph.prototype.situation = function () {
 // BlockMorph sticky comments
 
 BlockMorph.prototype.prepareToBeGrabbed = function (hand) {
-    Trace.log('Block.grabbed', {
-        'id': this.blockId(),
-        'origin': this.bounds.origin
-    });
+    // Trace.log('Block.grabbed', {
+    //     'id': this.blockId(),
+    //     'origin': this.bounds.origin
+    // });
     var wrld = hand ? hand.world : this.world();
     this.allInputs().forEach(input =>
         delete input.bindingID
@@ -4911,10 +4941,10 @@ BlockMorph.prototype.stackWidth = function () {
 };
 
 BlockMorph.prototype.snap = function () {
-    Trace.log('Block.snapped', {
-        'id': this.blockId(),
-        'origin': this.bounds.origin,
-    });
+    // Trace.log('Block.snapped', {
+    //     'id': this.blockId(),
+    //     'origin': this.bounds.origin,
+    // });
     var top = this.topBlock(),
         receiver,
         stage,
@@ -4972,7 +5002,7 @@ CommandBlockMorph.uber = BlockMorph.prototype;
 
 // CommandBlockMorph instance creation:
 
-function CommandBlockMorph() {
+export function CommandBlockMorph() {
     this.init();
 }
 
@@ -5242,10 +5272,10 @@ CommandBlockMorph.prototype.snap = function (hand) {
         this.setLeft(target.element.left());
         this.bottomBlock().nextBlock(target.element);
     } else if (target.loc === 'wrap') {
-        Trace.log('CommandBlock.wrap', {
-            'id': this.blockId(),
-            'target': target.element.blockId ? target.element.blockId() : null,
-        });
+        // Trace.log('CommandBlock.wrap', {
+        //     'id': this.blockId(),
+        //     'target': target.element.blockId ? target.element.blockId() : null,
+        // });
 
         cslot = detect( // this should be a method making use of caching
             this.inputs(), // these are already cached, so maybe it's okay
@@ -5801,7 +5831,7 @@ HatBlockMorph.uber = CommandBlockMorph.prototype;
 
 // HatBlockMorph instance creation:
 
-function HatBlockMorph() {
+export function HatBlockMorph() {
     this.init();
 }
 
@@ -5996,7 +6026,7 @@ ReporterBlockMorph.uber = BlockMorph.prototype;
 
 // ReporterBlockMorph instance creation:
 
-function ReporterBlockMorph(isPredicate) {
+export function ReporterBlockMorph(isPredicate) {
     this.init(isPredicate);
 }
 
@@ -6161,10 +6191,10 @@ ReporterBlockMorph.prototype.mouseClickLeft = function (pos) {
         new DialogBoxMorph(
             this,
             function(arg) {
-                Trace.log('TemplateArg.rename', {
-                    'id': myself.parent.argId(),
-                    'name': arg,
-                });
+                // Trace.log('TemplateArg.rename', {
+                //     'id': myself.parent.argId(),
+                //     'name': arg,
+                // });
                 myself.userSetSpec(arg);
             },
             this
@@ -6647,7 +6677,7 @@ RingMorph.prototype.isCachingInputs = false;
 
 // RingMorph instance creation:
 
-function RingMorph() {
+export function RingMorph() {
     this.init();
 }
 
@@ -6850,7 +6880,7 @@ ScriptsMorph.prototype.feedbackColor = WHITE;
 
 // ScriptsMorph instance creation:
 
-function ScriptsMorph() {
+export function ScriptsMorph() {
     this.init();
 }
 
@@ -7348,7 +7378,7 @@ ScriptsMorph.prototype.userMenu = function () {
 
 ScriptsMorph.prototype.cleanUp = function (silently) {
     if (!silently) {
-        Trace.log('Scripts.cleanUp');
+        // Trace.log('Scripts.cleanUp');
     }
     var target = this.selectForEdit(), // enable copy-on-edit
         origin = target.topLeft(),
@@ -7375,7 +7405,7 @@ ScriptsMorph.prototype.cleanUp = function (silently) {
 };
 
 ScriptsMorph.prototype.exportScriptsPicture = function () {
-    Trace.log('Scripts.exportPicture');
+    // Trace.log('Scripts.exportPicture');
     var pic = this.scriptsPicture(),
         ide = this.world().children[0];
     if (pic) {
@@ -7436,10 +7466,10 @@ ScriptsMorph.prototype.addComment = function () {
 ScriptsMorph.prototype.undrop = function () {
     if (this.isAnimating) {return; }
     if (!this.dropRecord || !this.dropRecord.lastRecord) {return; }
-    Trace.log('Scripts.undrop', {
-        'action': this.dropRecord.action,
-        'block': this.dropRecord.lastDroppedBlock.blockId()
-    });
+    // Trace.log('Scripts.undrop', {
+    //     'action': this.dropRecord.action,
+    //     'block': this.dropRecord.lastDroppedBlock.blockId()
+    // });
     if (!this.dropRecord.situation) {
         this.dropRecord.situation =
             this.dropRecord.lastDroppedBlock.situation();
@@ -7461,10 +7491,10 @@ ScriptsMorph.prototype.redrop = function () {
     if (this.isAnimating) {return; }
     if (!this.dropRecord || !this.dropRecord.nextRecord) {return; }
     this.dropRecord = this.dropRecord.nextRecord;
-    Trace.log('Scripts.redrop', {
-        'action': this.dropRecord.action,
-        'block': this.dropRecord.lastDroppedBlock.blockId()
-    });
+    // Trace.log('Scripts.redrop', {
+    //     'action': this.dropRecord.action,
+    //     'block': this.dropRecord.lastDroppedBlock.blockId()
+    // });
     if (this.dropRecord.action === 'delete') {
         this.recoverLastDrop(true);
         this.dropRecord.lastDroppedBlock.destroy();
@@ -7896,7 +7926,7 @@ ArgMorph.uber = SyntaxElementMorph.prototype;
 
 // ArgMorph instance creation:
 
-function ArgMorph(type) {
+export function ArgMorph(type) {
     this.init(type);
 }
 
@@ -8047,7 +8077,7 @@ CommandSlotMorph.uber = ArgMorph.prototype;
 
 // CommandSlotMorph instance creation:
 
-function CommandSlotMorph() {
+export function CommandSlotMorph() {
     this.init();
 }
 
@@ -8503,7 +8533,7 @@ RingCommandSlotMorph.prototype.edge = RingMorph.prototype.edge;
 
 // RingCommandSlotMorph instance creation:
 
-function RingCommandSlotMorph() {
+export function RingCommandSlotMorph() {
     this.init();
 }
 
@@ -8630,7 +8660,7 @@ CSlotMorph.uber = CommandSlotMorph.prototype;
 
 // CSlotMorph instance creation:
 
-function CSlotMorph() {
+export function CSlotMorph() {
     this.init();
 }
 
@@ -9087,7 +9117,7 @@ InputSlotMorph.uber = ArgMorph.prototype;
 
 // InputSlotMorph instance creation:
 
-function InputSlotMorph(text, isNumeric, choiceDict, isReadOnly) {
+export function InputSlotMorph(text, isNumeric, choiceDict, isReadOnly) {
     this.init(text, isNumeric, choiceDict, isReadOnly);
 }
 
@@ -9249,10 +9279,10 @@ InputSlotMorph.prototype.menuFromDict = function (
     }
     if (!noEmptyOption) {
         menu.addItem(' ', function() {
-            Trace.log('InputSlot.menuItemSelected', {
-                'id': myself.argId(),
-                'item': ' ',
-            });
+            // Trace.log('InputSlot.menuItemSelected', {
+            //     'id': myself.argId(),
+            //     'item': ' ',
+            // });
             return ' ';
         });
     }
@@ -9326,10 +9356,10 @@ InputSlotMorph.prototype.menuFromDict = function (
                     menu.addItem(
                         fKey,
                         function() {
-                            Trace.log('InputSlot.menuItemSelected', {
-                                'id': myself.argId(),
-                                'item': fKey,
-                            });
+                            // Trace.log('InputSlot.menuItemSelected', {
+                            //     'id': myself.argId(),
+                            //     'item': fKey,
+                            // });
                             var choice = choices[fKey];
                             if (choice instanceof Function) return choice();
                             return choice;
@@ -9953,10 +9983,10 @@ InputSlotMorph.prototype.reactToKeystroke = function () {
 };
 
 InputSlotMorph.prototype.reactToEdit = function () {
-    Trace.log('InputSlot.edited', {
-        'id': this.argId(),
-        'text': this.contents().text,
-    });
+    // Trace.log('InputSlot.edited', {
+    //     'id': this.argId(),
+    //     'text': this.contents().text,
+    // });
     this.contents().clearSelection();
 };
 
@@ -10374,7 +10404,7 @@ InputSlotStringMorph.prototype = new StringMorph();
 InputSlotStringMorph.prototype.constructor = InputSlotStringMorph;
 InputSlotStringMorph.uber = StringMorph.prototype;
 
-function InputSlotStringMorph(
+export function InputSlotStringMorph(
     text,
     fontSize,
     fontStyle,
@@ -10427,7 +10457,7 @@ InputSlotTextMorph.prototype = new TextMorph();
 InputSlotTextMorph.prototype.constructor = InputSlotTextMorph;
 InputSlotTextMorph.uber = StringMorph.prototype;
 
-function InputSlotTextMorph(
+export function InputSlotTextMorph(
     text,
     fontSize,
     fontStyle,
@@ -10476,7 +10506,7 @@ TemplateSlotMorph.uber = ArgMorph.prototype;
 
 // TemplateSlotMorph instance creation:
 
-function TemplateSlotMorph(name) {
+export function TemplateSlotMorph(name) {
     this.init(name);
 }
 
@@ -10621,7 +10651,7 @@ BooleanSlotMorph.prototype.isTernary = false;
 
 // BooleanSlotMorph instance creation:
 
-function BooleanSlotMorph(initialValue) {
+export function BooleanSlotMorph(initialValue) {
     this.init(initialValue);
 }
 
@@ -11207,7 +11237,7 @@ ArrowMorph.uber = Morph.prototype;
 
 // ArrowMorph instance creation:
 
-function ArrowMorph(direction, size, padding, color, isBlockLabel) {
+export function ArrowMorph(direction, size, padding, color, isBlockLabel) {
     this.init(direction, size, padding, color, isBlockLabel);
 }
 
@@ -11291,7 +11321,7 @@ TextSlotMorph.uber = InputSlotMorph.prototype;
 
 // TextSlotMorph instance creation:
 
-function TextSlotMorph(text, isNumeric, choiceDict, isReadOnly) {
+export function TextSlotMorph(text, isNumeric, choiceDict, isReadOnly) {
     this.init(text, isNumeric, choiceDict, isReadOnly);
 }
 
@@ -11376,7 +11406,7 @@ ColorSlotMorph.uber = ArgMorph.prototype;
 
 // ColorSlotMorph  instance creation:
 
-function ColorSlotMorph(clr) {
+export function ColorSlotMorph(clr) {
     this.init(clr);
 }
 
@@ -11424,10 +11454,10 @@ ColorSlotMorph.prototype.getUserColor = function () {
     hand.processMouseDown = nop;
 
     hand.processMouseUp = function () {
-        Trace.log('ColorArg.changeColor', {
-            'id': myself.argId(),
-            'color': myself.color,
-        });
+        // Trace.log('ColorArg.changeColor', {
+        //     'id': myself.argId(),
+        //     'color': myself.color,
+        // });
         pal.destroy();
         hand.processMouseMove = mouseMoveBak;
         hand.processMouseDown = mouseDownBak;
@@ -11503,7 +11533,7 @@ BlockHighlightMorph.uber = Morph.prototype;
 
 // BlockHighlightMorph instance creation:
 
-function BlockHighlightMorph() {
+export function BlockHighlightMorph() {
     this.threadCount = 0;
     this.init();
 }
@@ -11572,7 +11602,7 @@ MultiArgMorph.uber = ArgMorph.prototype;
 
 // MultiArgMorph instance creation:
 
-function MultiArgMorph(
+export function MultiArgMorph(
     slotSpec,
     labelTxt,
     min,
@@ -11914,7 +11944,7 @@ MultiArgMorph.prototype.mouseClickLeft = function (pos) {
     if (rightArrow.bounds.containsPoint(pos)) {
         for (i = 0; i < repetition; i += 1) {
             if (rightArrow.isVisible) {
-                Trace.log('MultiArg.addInput', this.argId());
+                // Trace.log('MultiArg.addInput', this.argId());
                 target.addInput();
             }
         }
@@ -11923,7 +11953,7 @@ MultiArgMorph.prototype.mouseClickLeft = function (pos) {
     ) {
         for (i = 0; i < repetition; i += 1) {
             if (leftArrow.isVisible) {
-                Trace.log('MultiArg.removeInput', this.argId());
+                // Trace.log('MultiArg.removeInput', this.argId());
                 target.removeInput();
             }
         }
@@ -12071,7 +12101,7 @@ ArgLabelMorph.uber = ArgMorph.prototype;
 
 // MultiArgMorph instance creation:
 
-function ArgLabelMorph(argMorph, labelTxt) {
+export function ArgLabelMorph(argMorph, labelTxt) {
     this.init(argMorph, labelTxt);
 }
 
@@ -12195,7 +12225,7 @@ FunctionSlotMorph.uber = ArgMorph.prototype;
 
 // FunctionSlotMorph instance creation:
 
-function FunctionSlotMorph(isPredicate) {
+export function FunctionSlotMorph(isPredicate) {
     this.init(isPredicate);
 }
 
@@ -12573,7 +12603,7 @@ ReporterSlotMorph.uber = FunctionSlotMorph.prototype;
 
 // ReporterSlotMorph instance creation:
 
-function ReporterSlotMorph(isPredicate) {
+export function ReporterSlotMorph(isPredicate) {
     this.init(isPredicate);
 }
 
@@ -12667,7 +12697,7 @@ RingReporterSlotMorph.prototype.enableCommandDrops = true;
 
 // RingReporterSlotMorph instance creation:
 
-function RingReporterSlotMorph(isPredicate) {
+export function RingReporterSlotMorph(isPredicate) {
     this.init(isPredicate);
 }
 
@@ -13116,7 +13146,7 @@ CommentMorph.prototype.refreshScale();
 
 // CommentMorph instance creation:
 
-function CommentMorph(contents) {
+export function CommentMorph(contents) {
     this.init(contents);
 }
 
@@ -13541,7 +13571,7 @@ ScriptFocusMorph.uber = BoxMorph.prototype;
 
 // ScriptFocusMorph instance creation:
 
-function ScriptFocusMorph(editor, initialElement, position) {
+export function ScriptFocusMorph(editor, initialElement, position) {
     this.init(editor, initialElement, position);
 }
 

@@ -42,11 +42,11 @@
 
 modules.video = '2019-May-22';
 
-var VideoMotion;
+export var VideoMotion;
 
 // VideoMotion /////////////////////////////////////////////////////////////////
 
-function VideoMotion(width, height) {
+export function VideoMotion(width, height) {
 /*
  * Calculate, based on two consecutive video frames, the amount of movement and
  * direction of this movement both on the stage and on the sprite.

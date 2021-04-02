@@ -61,16 +61,29 @@ StageMorph, SpriteMorph, StagePrompterMorph, Note, modules, isString, copy, Map,
 isNil, WatcherMorph, List, ListWatcherMorph, alert, console, TableMorph, BLACK,
 TableFrameMorph, ColorSlotMorph, isSnapObject, newCanvas, Symbol, SVG_Costume*/
 
+
+
+import {ZERO, BLACK, modules, contains, Morph,Point,
+  degrees, detect, nop, radians,
+  localize, isString,
+  isNil,newCanvas} from './morphic'
+
+
+import {ArgMorph, BlockMorph, CommandBlockMorph, CommandSlotMorph,
+  MultiArgMorph,  ReporterBlockMorph, SyntaxElementMorph,
+  ReporterSlotMorph, CSlotMorph, RingMorph
+  , ArgLabelMorph,   ColorSlotMorph} from './blocks.js'
+
 modules.threads = '2020-November-20';
 
-var ThreadManager;
-var Process;
-var Context;
-var Variable;
-var VariableFrame;
-var JSCompiler;
+// export var ThreadManager;
+// export var Process;
+// export var Context;
+// export var Variable;
+// export var VariableFrame;
+// export var JSCompiler;
 
-const NONNUMBERS = [true, false, ''];
+export const NONNUMBERS = [true, false, ''];
 
 (function () {
     // "zum Schneckengang verdorben, was Adlerflug geworden wäre"
@@ -83,7 +96,7 @@ const NONNUMBERS = [true, false, ''];
     NONNUMBERS.push(String.fromCharCode(160));
 })();
 
-function snapEquals(a, b) {
+export function snapEquals(a, b) {
     if (a instanceof List || (b instanceof List)) {
         if (a instanceof List && (b instanceof List)) {
             return a.equalTo(b);
@@ -111,7 +124,7 @@ function snapEquals(a, b) {
     return x === y;
 }
 
-function invoke(
+export function invoke(
     action, // a BlockMorph or a Context, a reified ("ringified") block
     contextArgs, // optional List of arguments for the context, or null
     receiver, // sprite or environment, optional for contexts
@@ -185,7 +198,7 @@ function invoke(
 
 // ThreadManager ///////////////////////////////////////////////////////
 
-function ThreadManager() {
+export function ThreadManager() {
     this.processes = [];
     this.wantsToPause = false; // single stepping support
 }
@@ -564,7 +577,7 @@ Process.prototype.enableCompiling = false; // experimental
 Process.prototype.flashTime = 0; // experimental
 // Process.prototype.enableJS = false;
 
-function Process(topBlock, receiver, onComplete, yieldFirst) {
+export function Process(topBlock, receiver, onComplete, yieldFirst) {
     this.topBlock = topBlock || null;
     this.receiver = receiver;
     this.instrument = receiver ? receiver.instrument : null;
@@ -6302,7 +6315,7 @@ Process.prototype.reportAtomicGroup = function (list, reporter) {
     accumulator     slot for collecting data from reentrant visits
 */
 
-function Context(
+export function Context(
     parentContext,
     expression,
     outerContext,
@@ -6500,7 +6513,7 @@ Context.prototype.stackSize = function () {
 
 // Variable /////////////////////////////////////////////////////////////////
 
-function Variable(value, isTransient) {
+export function Variable(value, isTransient) {
     this.value = value;
     this.isTransient = isTransient || false; // prevent value serialization
 }
@@ -6516,7 +6529,7 @@ Variable.prototype.copy = function () {
 
 // VariableFrame ///////////////////////////////////////////////////////
 
-function VariableFrame(parentFrame, owner) {
+export function VariableFrame(parentFrame, owner) {
     this.vars = {};
     this.parentFrame = parentFrame || null;
     this.owner = owner || null;
@@ -6715,7 +6728,7 @@ VariableFrame.prototype.allNames = function (upTo) {
 	*** highly experimental and heavily under construction ***
 */
 
-function JSCompiler(aProcess) {
+export function JSCompiler(aProcess) {
 	this.process = aProcess;
 	this.source = null; // a context
  	this.gensyms = null; // temp dictionary for parameter substitutions

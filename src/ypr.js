@@ -12,7 +12,7 @@ Last changed 2017-07-04 by Jens Moenig (disabled text area overlay, introduced S
 
 */
 
-var sb = (function (sb) {
+export var sb = (function (sb) {
     'use strict';
 
     function extend(o, p) {

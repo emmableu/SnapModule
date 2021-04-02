@@ -37,12 +37,12 @@
 /*global modules, Point, newCanvas, radians, StringMorph, normalizeCanvas*/
 
 // Global stuff ////////////////////////////////////////////////////////
-
+import {modules, Point, newCanvas, radians, StringMorph, normalizeCanvas} from './morphic'
 modules.maps = '2020-March-25';
 
 // WorldMap /////////////////////////////////////////////////////////////
 
-function WorldMap(host) {
+export function WorldMap(host) {
     this.tileServers = {
         OpenStreetMap: {
             url: 'tile.openstreetmap.org',
@@ -275,7 +275,7 @@ WorldMap.prototype.render = function () {
         );
         crd();
     }
-    
+
     function err() {
         myself.loading -= 1;
         crd();

@@ -1281,20 +1281,20 @@
 
 /*global window, HTMLCanvasElement, FileReader, Audio, FileList, Map*/
 
-var morphicVersion = '2020-November-12';
-var modules = {}; // keep track of additional loaded modules
-var useBlurredShadows = true;
+export var morphicVersion = '2020-November-12';
+export var modules = {}; // keep track of additional loaded modules
+export var useBlurredShadows = true;
 
-const ZERO = new Point();
-const BLACK = new Color();
-const WHITE = new Color(255, 255, 255);
-const CLEAR = new Color(0, 0, 0, 0);
+export const ZERO = new Point();
+export const BLACK = new Color();
+export const WHITE = new Color(255, 255, 255);
+export const CLEAR = new Color(0, 0, 0, 0);
 
 Object.freeze(ZERO);
 Object.freeze(BLACK);
 Object.freeze(WHITE);
 
-var standardSettings = {
+export var standardSettings = {
     minimumFontHeight: getMinimumFontHeight(), // browser settings
     globalFontFamily: '',
     menuFontName: 'sans-serif',
@@ -1314,7 +1314,7 @@ var standardSettings = {
     showHoles: false
 };
 
-var touchScreenSettings = {
+export var touchScreenSettings = {
     minimumFontHeight: standardSettings.minimumFontHeight,
     globalFontFamily: '',
     menuFontName: 'sans-serif',
@@ -1334,7 +1334,7 @@ var touchScreenSettings = {
     showHoles: false
 };
 
-var MorphicPreferences = standardSettings;
+export var MorphicPreferences = standardSettings;
 
 // first, try enabling support for retina displays - can be turned off later
 
@@ -1366,26 +1366,26 @@ enableRetinaSupport();
 
 // Global Functions ////////////////////////////////////////////////////
 
-function nop() {
+export function nop() {
     // do explicitly nothing
     return null;
 }
 
-function localize(string) {
+export function localize(string) {
     // override this function with custom localizations
     return string;
 }
 
-function isNil(thing) {
+export function isNil(thing) {
     return thing === undefined || thing === null;
 }
 
-function contains(list, element) {
+export function contains(list, element) {
     // answer true if element is a member of list
     return list.indexOf(element) !== -1;
 }
 
-function detect(list, predicate) {
+export function detect(list, predicate) {
     // answer the first element of list for which predicate evaluates
     // true, otherwise answer null
     var i, size = list.length;
@@ -1397,7 +1397,7 @@ function detect(list, predicate) {
     return null;
 }
 
-function sizeOf(object) {
+export function sizeOf(object) {
     // answer the number of own properties
     var size = 0, key;
     for (key in object) {
@@ -1408,42 +1408,42 @@ function sizeOf(object) {
     return size;
 }
 
-function isString(target) {
+export function isString(target) {
     return typeof target === 'string' || target instanceof String;
 }
 
-function isObject(target) {
+export function isObject(target) {
     return target !== null &&
         (typeof target === 'object' || target instanceof Object);
 }
 
-function radians(degrees) {
+export function radians(degrees) {
     return degrees * Math.PI / 180;
 }
 
-function degrees(radians) {
+export function degrees(radians) {
     return radians * 180 / Math.PI;
 }
 
-function fontHeight(height) {
+export function fontHeight(height) {
     var minHeight = Math.max(height, MorphicPreferences.minimumFontHeight);
     return minHeight * 1.2; // assuming 1/5 font size for ascenders
 }
 
-function isWordChar(aCharacter) {
+export function isWordChar(aCharacter) {
     // can't use \b or \w because they ignore diacritics
     return aCharacter.match(/[A-zÀ-ÿ0-9]/);
 }
 
-function isURLChar(aCharacter) {
+export function isURLChar(aCharacter) {
     return aCharacter.match(/[A-z0-9./:?&_+%-]/);
 }
 
-function isURL(text) {
+export function isURL(text) {
     return /^https?:\/\//.test(text);
 }
 
-function newCanvas(extentPoint, nonRetina, recycleMe) {
+export function newCanvas(extentPoint, nonRetina, recycleMe) {
     // answer a new empty instance of Canvas, don't display anywhere
     // nonRetina - optional Boolean "false"
     // by default retina support is automatic
@@ -1473,7 +1473,7 @@ function newCanvas(extentPoint, nonRetina, recycleMe) {
     return canvas;
 }
 
-function copyCanvas(aCanvas) {
+export function copyCanvas(aCanvas) {
     // answer a deep copy of a canvas element respecting its retina status
     var c;
     if (aCanvas && aCanvas.width && aCanvas.height) {
@@ -1487,7 +1487,7 @@ function copyCanvas(aCanvas) {
     return aCanvas;
 }
 
-function getMinimumFontHeight() {
+export function getMinimumFontHeight() {
     // answer the height of the smallest font renderable in pixels
     var str = 'I',
         size = 50,
@@ -1516,7 +1516,7 @@ function getMinimumFontHeight() {
     return 0;
 }
 
-function getDocumentPositionOf(aDOMelement) {
+export function getDocumentPositionOf(aDOMelement) {
     // answer the relative coordinates of a DOM element in the viewport
     var rect = aDOMelement.getBoundingClientRect(),
     scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
@@ -1524,7 +1524,7 @@ function getDocumentPositionOf(aDOMelement) {
     return {x: rect.left + scrollLeft, y:rect.top + scrollTop};
 }
 
-function copy(target) {
+export function copy(target) {
     // answer a shallow copy of target
     var value, c, property, keys, l, i;
     if (typeof target !== 'object') {
@@ -1603,7 +1603,7 @@ function copy(target) {
     stage (high-resolution) into a sprite-costume (normal resolution).
 */
 
-function enableRetinaSupport() {
+export function enableRetinaSupport() {
 /*
     === contributed by Bartosz Leper ===
 
@@ -1848,7 +1848,7 @@ function enableRetinaSupport() {
     });
 }
 
-function isRetinaSupported () {
+export function isRetinaSupported () {
     var ctx = document.createElement("canvas").getContext("2d"),
         backingStorePixelRatio = ctx.webkitBackingStorePixelRatio ||
             ctx.mozBackingStorePixelRatio ||
@@ -1890,11 +1890,11 @@ function isRetinaSupported () {
     );
 }
 
-function isRetinaEnabled () {
+export function isRetinaEnabled () {
     return HTMLCanvasElement.prototype.hasOwnProperty('_isRetinaEnabled');
 }
 
-function disableRetinaSupport() {
+export function disableRetinaSupport() {
     // uninstalls Retina utilities. Make sure to re-create every Canvas
     // element afterwards
     var canvasProto, contextProto, uber;
@@ -1914,7 +1914,7 @@ function disableRetinaSupport() {
     delete canvasProto._bak;
 }
 
-function normalizeCanvas(aCanvas, getCopy) {
+export function normalizeCanvas(aCanvas, getCopy) {
     // make sure aCanvas is non-retina, otherwise convert it in place (!)
     // or answer a normalized copy if the "getCopy" flag is <true>
     var cpy;
@@ -1962,7 +1962,7 @@ function normalizeCanvas(aCanvas, getCopy) {
 
 // Animation instance creation:
 
-function Animation(setter, getter, delta, duration, easing, onComplete) {
+export function Animation(setter, getter, delta, duration, easing, onComplete) {
     this.setter = setter; // function
     this.getter = getter; // function
     this.delta = delta || 0; // number
@@ -2036,7 +2036,7 @@ Animation.prototype.step = function () {
 
 // Color instance creation:
 
-function Color(r, g, b, a) {
+export function Color(r, g, b, a) {
     // all values are optional, just (r, g, b) is fine
     this.r = r || 0;
     this.g = g || 0;
@@ -2322,7 +2322,7 @@ Color.prototype.solid = function () {
 
 // Point instance creation:
 
-function Point(x, y) {
+export function Point(x, y) {
     this.x = x || 0;
     this.y = y || 0;
 }
@@ -2580,7 +2580,7 @@ Point.prototype.asArray = function () {
 
 // Rectangle instance creation:
 
-function Rectangle(left, top, right, bottom) {
+export function Rectangle(left, top, right, bottom) {
     this.init(new Point((left || 0), (top || 0)),
             new Point((right || 0), (bottom || 0)));
 }
@@ -2962,7 +2962,7 @@ Rectangle.prototype.asArray_xywh = function () {
 
 // Node instance creation:
 
-function Node(parent, childrenArray) {
+export function Node(parent, childrenArray) {
     this.init(parent || null, childrenArray || []);
 }
 
@@ -3092,20 +3092,20 @@ Node.prototype.parentThatIsAnyOf = function (constructors) {
 
 // Morph: referenced constructors
 
-var Morph;
-var WorldMorph;
-var HandMorph;
-var ShadowMorph;
-var FrameMorph;
-var MenuMorph;
-var HandleMorph;
-var StringFieldMorph;
-var ColorPickerMorph;
-var SliderMorph;
-var ScrollFrameMorph;
-var InspectorMorph;
-var StringMorph;
-var TextMorph;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // Morph inherits from Node:
 
@@ -3119,7 +3119,7 @@ Morph.prototype.shadowBlur = 4;
 
 // Morph instance creation:
 
-function Morph() {
+export function Morph() {
     this.init();
 }
 
@@ -4681,7 +4681,7 @@ ShadowMorph.uber = Morph.prototype;
 
 // ShadowMorph instance creation:
 
-function ShadowMorph() {
+export function ShadowMorph() {
     this.init();
 }
 
@@ -4706,7 +4706,7 @@ HandleMorph.uber = Morph.prototype;
 
 // HandleMorph instance creation:
 
-function HandleMorph(target, minX, minY, insetX, insetY, type) {
+export function HandleMorph(target, minX, minY, insetX, insetY, type) {
     // if insetY is missing, it will be the same as insetX
     this.init(target, minX, minY, insetX, insetY, type);
 }
@@ -4988,7 +4988,7 @@ HandleMorph.prototype.attach = function () {
 
 // PenMorph: referenced constructors
 
-var PenMorph;
+//
 
 // PenMorph inherits from Morph:
 
@@ -4998,7 +4998,7 @@ PenMorph.uber = Morph.prototype;
 
 // PenMorph instance creation:
 
-function PenMorph() {
+export function PenMorph() {
     this.init();
 }
 
@@ -5247,7 +5247,7 @@ PenMorph.prototype.tree = function (level, length, angle) {
 
 // ColorPaletteMorph ///////////////////////////////////////////////////
 
-var ColorPaletteMorph;
+//
 
 // ColorPaletteMorph inherits from Morph:
 
@@ -5257,7 +5257,7 @@ ColorPaletteMorph.uber = Morph.prototype;
 
 // ColorPaletteMorph instance creation:
 
-function ColorPaletteMorph(target, sizePoint) {
+export function ColorPaletteMorph(target, sizePoint) {
     this.init(
         target || null,
         sizePoint || new Point(80, 50)
@@ -5358,7 +5358,7 @@ ColorPaletteMorph.prototype.setTargetSetter = function () {
 
 // GrayPaletteMorph ///////////////////////////////////////////////////
 
-var GrayPaletteMorph;
+//
 
 // GrayPaletteMorph inherits from ColorPaletteMorph:
 
@@ -5368,7 +5368,7 @@ GrayPaletteMorph.uber = ColorPaletteMorph.prototype;
 
 // GrayPaletteMorph instance creation:
 
-function GrayPaletteMorph(target, sizePoint) {
+export function GrayPaletteMorph(target, sizePoint) {
     this.init(
         target || null,
         sizePoint || new Point(80, 10)
@@ -5397,7 +5397,7 @@ ColorPickerMorph.uber = Morph.prototype;
 
 // ColorPickerMorph instance creation:
 
-function ColorPickerMorph(defaultColor) {
+export function ColorPickerMorph(defaultColor) {
     this.init(defaultColor || WHITE);
 }
 
@@ -5448,7 +5448,7 @@ ColorPickerMorph.prototype.rootForGrab = function () {
 
 // can be used for text cursors
 
-var BlinkerMorph;
+
 
 // BlinkerMorph inherits from Morph:
 
@@ -5458,7 +5458,7 @@ BlinkerMorph.uber = Morph.prototype;
 
 // BlinkerMorph instance creation:
 
-function BlinkerMorph(rate) {
+export function BlinkerMorph(rate) {
     this.init(rate);
 }
 
@@ -5480,7 +5480,7 @@ BlinkerMorph.prototype.step = function () {
 
 // CursorMorph: referenced constructors
 
-var CursorMorph;
+
 
 // CursorMorph inherits from BlinkerMorph:
 
@@ -5494,7 +5494,7 @@ CursorMorph.prototype.viewPadding = 1;
 
 // CursorMorph instance creation:
 
-function CursorMorph(aStringOrTextMorph, aTextarea) {
+export function CursorMorph(aStringOrTextMorph, aTextarea) {
     this.init(aStringOrTextMorph, aTextarea);
 }
 
@@ -5823,7 +5823,7 @@ CursorMorph.prototype.destroy = function () {
 
 // I can have an optionally rounded border
 
-var BoxMorph;
+
 
 // BoxMorph inherits from Morph:
 
@@ -5833,7 +5833,7 @@ BoxMorph.uber = Morph.prototype;
 
 // BoxMorph instance creation:
 
-function BoxMorph(edge, border, borderColor) {
+export function BoxMorph(edge, border, borderColor) {
     this.init(edge, border, borderColor);
 }
 
@@ -6024,7 +6024,7 @@ BoxMorph.prototype.numericalSetters = function () {
 
 // SpeechBubbleMorph: referenced constructors
 
-var SpeechBubbleMorph;
+
 
 // SpeechBubbleMorph inherits from BoxMorph:
 
@@ -6034,7 +6034,7 @@ SpeechBubbleMorph.uber = BoxMorph.prototype;
 
 // SpeechBubbleMorph instance creation:
 
-function SpeechBubbleMorph(
+export function SpeechBubbleMorph(
     contents,
     color,
     edge,
@@ -6357,7 +6357,7 @@ SpeechBubbleMorph.prototype.shadowImageBlurred = function (off, color) {
 
 // I am a knob than can be turned to select a number
 
-var DialMorph;
+//
 
 // DialMorph inherits from Morph:
 
@@ -6365,7 +6365,7 @@ DialMorph.prototype = new Morph();
 DialMorph.prototype.constructor = DialMorph;
 DialMorph.uber = Morph.prototype;
 
-function DialMorph(min, max, value, tick, radius) {
+export function DialMorph(min, max, value, tick, radius) {
     this.init(min, max, value, tick, radius);
 }
 
@@ -6657,7 +6657,7 @@ DialMorph.prototype.updateTarget = function () {
 
 // I can be used for sliders
 
-var CircleBoxMorph;
+//
 
 // CircleBoxMorph inherits from Morph:
 
@@ -6665,7 +6665,7 @@ CircleBoxMorph.prototype = new Morph();
 CircleBoxMorph.prototype.constructor = CircleBoxMorph;
 CircleBoxMorph.uber = Morph.prototype;
 
-function CircleBoxMorph(orientation) {
+export function CircleBoxMorph(orientation) {
     this.init(orientation || 'vertical');
 }
 
@@ -6793,7 +6793,7 @@ CircleBoxMorph.prototype.toggleOrientation = function () {
 
 // SliderButtonMorph ///////////////////////////////////////////////////
 
-var SliderButtonMorph;
+
 
 // SliderButtonMorph inherits from CircleBoxMorph:
 
@@ -6801,7 +6801,7 @@ SliderButtonMorph.prototype = new CircleBoxMorph();
 SliderButtonMorph.prototype.constructor = SliderButtonMorph;
 SliderButtonMorph.uber = CircleBoxMorph.prototype;
 
-function SliderButtonMorph(orientation) {
+export function SliderButtonMorph(orientation) {
     this.init(orientation);
 }
 
@@ -6997,7 +6997,7 @@ SliderMorph.prototype = new CircleBoxMorph();
 SliderMorph.prototype.constructor = SliderMorph;
 SliderMorph.uber = CircleBoxMorph.prototype;
 
-function SliderMorph(start, stop, value, size, orientation, color) {
+export function SliderMorph(start, stop, value, size, orientation, color) {
     this.init(
         start || 0,
         stop || 100,
@@ -7338,7 +7338,7 @@ SliderMorph.prototype.mouseDownLeft = function (pos) {
 
 // for demo and debuggin purposes only, to be removed later
 
-var MouseSensorMorph;
+
 
 // MouseSensorMorph inherits from BoxMorph:
 
@@ -7348,7 +7348,7 @@ MouseSensorMorph.uber = BoxMorph.prototype;
 
 // MouseSensorMorph instance creation:
 
-function MouseSensorMorph(edge, border, borderColor) {
+export function MouseSensorMorph(edge, border, borderColor) {
     this.init(edge, border, borderColor);
 }
 
@@ -7408,8 +7408,8 @@ MouseSensorMorph.prototype.mouseClickLeft = function () {
 
 // InspectorMorph: referenced constructors
 
-var ListMorph;
-var TriggerMorph;
+
+
 
 // InspectorMorph inherits from BoxMorph:
 
@@ -7419,7 +7419,7 @@ InspectorMorph.uber = BoxMorph.prototype;
 
 // InspectorMorph instance creation:
 
-function InspectorMorph(target) {
+export function InspectorMorph(target) {
     this.init(target);
 }
 
@@ -7880,7 +7880,7 @@ InspectorMorph.prototype.updateReferences = function (map) {
 
 // MenuMorph: referenced constructors
 
-var MenuItemMorph;
+
 
 // MenuMorph inherits from BoxMorph:
 
@@ -7890,7 +7890,7 @@ MenuMorph.uber = BoxMorph.prototype;
 
 // MenuMorph instance creation:
 
-function MenuMorph(target, title, environment, fontSize) {
+export function MenuMorph(target, title, environment, fontSize) {
     this.init(target, title, environment, fontSize);
 
     /*
@@ -8424,7 +8424,7 @@ StringMorph.prototype.measureCtx = newCanvas().getContext("2d");
 
 // StringMorph instance creation:
 
-function StringMorph(
+export function StringMorph(
     text,
     fontSize,
     fontStyle,
@@ -9130,7 +9130,7 @@ TextMorph.prototype.measureCtx = StringMorph.prototype.measureCtx;
 
 // TextMorph instance creation:
 
-function TextMorph(
+export function TextMorph(
     text,
     fontSize,
     fontStyle,
@@ -9682,7 +9682,7 @@ TriggerMorph.uber = Morph.prototype;
 
 // TriggerMorph instance creation:
 
-function TriggerMorph(
+export function TriggerMorph(
     target,
     action,
     labelString,
@@ -9925,7 +9925,7 @@ TriggerMorph.prototype.popUpbubbleHelp = function (contents) {
 
 // I automatically determine my bounds
 
-var MenuItemMorph;
+
 
 // MenuItemMorph inherits from TriggerMorph:
 
@@ -9935,7 +9935,7 @@ MenuItemMorph.uber = TriggerMorph.prototype;
 
 // MenuItemMorph instance creation:
 
-function MenuItemMorph(
+export function MenuItemMorph(
     target,
     action,
     labelString, // can also be a Morph or a Canvas or a tuple: [icon, string]
@@ -10192,7 +10192,7 @@ FrameMorph.prototype = new Morph();
 FrameMorph.prototype.constructor = FrameMorph;
 FrameMorph.uber = Morph.prototype;
 
-function FrameMorph(aScrollFrame) {
+export function FrameMorph(aScrollFrame) {
     this.init(aScrollFrame);
 }
 
@@ -10364,7 +10364,7 @@ ScrollFrameMorph.prototype = new FrameMorph();
 ScrollFrameMorph.prototype.constructor = ScrollFrameMorph;
 ScrollFrameMorph.uber = FrameMorph.prototype;
 
-function ScrollFrameMorph(scroller, size, sliderColor) {
+export function ScrollFrameMorph(scroller, size, sliderColor) {
     this.init(scroller, size, sliderColor);
 }
 
@@ -10746,7 +10746,7 @@ ListMorph.prototype = new ScrollFrameMorph();
 ListMorph.prototype.constructor = ListMorph;
 ListMorph.uber = ScrollFrameMorph.prototype;
 
-function ListMorph(elements, labelGetter, format, onDoubleClick, separator) {
+export function ListMorph(elements, labelGetter, format, onDoubleClick, separator) {
 /*
     passing a format is optional. If the format parameter is specified
     it has to be of the following pattern:
@@ -10907,7 +10907,7 @@ StringFieldMorph.prototype = new FrameMorph();
 StringFieldMorph.prototype.constructor = StringFieldMorph;
 StringFieldMorph.uber = FrameMorph.prototype;
 
-function StringFieldMorph(
+export function StringFieldMorph(
     defaultContents,
     minWidth,
     fontSize,
@@ -10996,7 +10996,7 @@ StringFieldMorph.prototype.mouseClickLeft = function (pos) {
 
 // I am a Demo of a stepping custom Morph
 
-var BouncerMorph;
+
 
 // Bouncers inherit from Morph:
 
@@ -11006,7 +11006,7 @@ BouncerMorph.uber = Morph.prototype;
 
 // BouncerMorph instance creation:
 
-function BouncerMorph() {
+export function BouncerMorph() {
     this.init();
 }
 
@@ -11093,7 +11093,7 @@ HandMorph.uber = Morph.prototype;
 
 // HandMorph instance creation:
 
-function HandMorph(aWorld) {
+export function HandMorph(aWorld) {
     this.init(aWorld);
 }
 
@@ -11817,7 +11817,7 @@ WorldMorph.prototype.customMorphs = [];
 
 // WorldMorph instance creation:
 
-function WorldMorph(aCanvas, fillPage) {
+export function WorldMorph(aCanvas, fillPage) {
     this.init(aCanvas, fillPage);
 }
 

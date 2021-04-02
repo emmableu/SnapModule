@@ -32,17 +32,17 @@
 // (The module date is included for simplicity, but is not needed elsewhere.)
 
 /*global modules, hex_sha512*/
-
-modules = modules || {};
+import {modules} from './morphic'
+// modules = modules || {};
 modules.cloud = '2020-October-21';
 
 // Global stuff
 
-var Cloud;
+// export var Cloud;
 
 // Cloud /////////////////////////////////////////////////////////////
 
-function Cloud() {
+export function Cloud() {
     this.init();
 }
 

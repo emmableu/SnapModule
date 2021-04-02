@@ -65,14 +65,14 @@ modules.sketch = '2020-July-13';
 
 // Declarations
 
-var VectorShape;
-var VectorRectangle;
-var VectorLine;
-var VectorEllipse;
-var VectorPolygon;
-var VectorSelection;
-var VectorPaintEditorMorph;
-var VectorPaintCanvasMorph;
+export var VectorShape;
+export var VectorRectangle;
+export var VectorLine;
+export var VectorEllipse;
+export var VectorPolygon;
+export var VectorSelection;
+// var VectorPaintEditorMorph;
+// var VectorPaintCanvasMorph;
 
 // VectorShape
 
@@ -80,7 +80,7 @@ VectorShape.prototype = {};
 VectorShape.prototype.constructor = VectorShape;
 VectorShape.uber = Object.prototype;
 
-function VectorShape (borderWidth, borderColor, fillColor) {
+export function VectorShape (borderWidth, borderColor, fillColor) {
     this.init(borderWidth, borderColor, fillColor);
 }
 
@@ -243,7 +243,7 @@ VectorRectangle.prototype = new VectorShape();
 VectorRectangle.prototype.constructor = VectorRectangle;
 VectorRectangle.uber = VectorShape.prototype;
 
-function VectorRectangle (
+export function VectorRectangle (
     borderWidth,
     borderColor,
     fillColor,
@@ -354,7 +354,7 @@ VectorLine.prototype = new VectorShape();
 VectorLine.prototype.constructor = VectorLine;
 VectorLine.uber = VectorShape.prototype;
 
-function VectorLine (borderWidth, borderColor, origin, destination) {
+export function VectorLine (borderWidth, borderColor, origin, destination) {
     VectorLine.uber.init.call(this, borderWidth, borderColor);
     this.init(origin, destination);
 }
@@ -457,7 +457,7 @@ VectorEllipse.prototype = new VectorShape();
 VectorEllipse.prototype.constructor = VectorEllipse;
 VectorEllipse.uber = VectorShape.prototype;
 
-function VectorEllipse (
+export function VectorEllipse (
     borderWidth,
     borderColor,
     fillColor,
@@ -584,7 +584,7 @@ VectorPolygon.prototype = new VectorShape();
 VectorPolygon.prototype.constructor = VectorPolygon;
 VectorPolygon.uber = VectorShape.prototype;
 
-function VectorPolygon (
+export function VectorPolygon (
     borderWidth,
     borderColor,
     fillColor,
@@ -811,7 +811,7 @@ VectorSelection.prototype = new VectorRectangle();
 VectorSelection.prototype.constructor = VectorSelection;
 VectorSelection.uber = VectorRectangle.prototype;
 
-function VectorSelection (origin, destination) {
+export function VectorSelection (origin, destination) {
     VectorRectangle.uber.init.call(
         this,
         1, // borderWidth
@@ -895,7 +895,7 @@ Crosshair.prototype = VectorShape;
 Crosshair.prototype.constructor = Crosshair;
 Crosshair.uber = VectorShape.prototype;
 
-function Crosshair (center, paper) {
+export function Crosshair (center, paper) {
     this.init(center, paper);
 }
 
@@ -927,7 +927,7 @@ VectorPaintEditorMorph.prototype = new PaintEditorMorph();
 VectorPaintEditorMorph.prototype.constructor = VectorPaintEditorMorph;
 VectorPaintEditorMorph.uber = PaintEditorMorph.prototype;
 
-function VectorPaintEditorMorph() {
+export function VectorPaintEditorMorph() {
     this.init();
 }
 
@@ -1658,7 +1658,7 @@ VectorPaintCanvasMorph.prototype = new PaintCanvasMorph();
 VectorPaintCanvasMorph.prototype.constructor = VectorPaintCanvasMorph;
 VectorPaintCanvasMorph.uber = PaintCanvasMorph.prototype;
 
-function VectorPaintCanvasMorph (shift) {
+export function VectorPaintCanvasMorph (shift) {
     this.init(shift);
 }
 

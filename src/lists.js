@@ -64,10 +64,30 @@ MorphicPreferences, TableDialogMorph, SpriteBubbleMorph, SpeechBubbleMorph,
 TableFrameMorph, TableMorph, Variable, isSnapObject, Costume, contains, detect,
 ZERO, WHITE*/
 
+
+import { ZERO, detect, BoxMorph, Color,
+   MenuMorph,  contains,
+  MorphicPreferences, WHITE, ScrollFrameMorph,
+  StringMorph, Point,
+  isString, modules, HandleMorph,
+  SpeechBubbleMorph, isNil,
+  localize
+  } from './morphic.js'
+
+
+
+import { PushButtonMorph,
+} from './widgets.js'
+
+import { SyntaxElementMorph} from './blocks.js';
+
+
+import { SpriteBubbleMorph, isSnapObject, Costume, SpriteMorph, WatcherMorph} from './objects';
+
 modules.lists = '2020-July-01';
 
-var List;
-var ListWatcherMorph;
+// export var List;
+// var ListWatcherMorph;
 
 // List ////////////////////////////////////////////////////////////////
 
@@ -115,7 +135,7 @@ var ListWatcherMorph;
 
 // List instance creation:
 
-function List(array) {
+export function List(array) {
     this.type = null; // for UI lists, such as costumes, sounds, sprites
     this.contents = array || [];
     this.first = null;
@@ -667,12 +687,11 @@ ListWatcherMorph.uber = BoxMorph.prototype;
 
 // ListWatcherMorph default settings
 
-ListWatcherMorph.prototype.cellColor =
-    SpriteMorph.prototype.blockColor.lists;
+ListWatcherMorph.prototype.cellColor = new Color(217, 77, 17);
 
 // ListWatcherMorph instance creation:
 
-function ListWatcherMorph(list, parentCell) {
+export function ListWatcherMorph(list, parentCell) {
     this.init(list, parentCell);
 }
 

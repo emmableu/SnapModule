@@ -53,7 +53,7 @@
         BlockImportDialogMorph
         BlockRemovalDialogMorph
         InputSlotDialogMorph
-        VariableDialogMorph
+        variableDialogMorph
 
     ReporterBlockMorph***
         CustomReporterBlockMorph
@@ -88,7 +88,7 @@
     BlockLabelPlaceHolderMorph
     BlockInputFragmentMorph
     InputSlotDialogMorph
-    VariableDialogMorph
+    variableDialogMorph
     BlockExportDialogMorph
     BlockImportDialogMorph
     BlockRemovalDialogMorph
@@ -106,33 +106,53 @@ MorphicPreferences, SymbolMorph, isNil, CursorMorph, VariableFrame,
 WatcherMorph, Variable, BooleanSlotMorph, XML_Serializer, SnapTranslator*/
 
 // Global stuff ////////////////////////////////////////////////////////
+import {modules, Morph, Color,
+  StringMorph, Point, MenuMorph,
+  contains, ScrollFrameMorph,
+   nop, detect,
+  MorphicPreferences, isNil, fontHeight,  localize
+  , HandleMorph, WHITE,
+   BoxMorph} from './morphic'
 
+import {SymbolMorph} from './symbols'
+
+import {DialogBoxMorph, ToggleButtonMorph, PushButtonMorph,
+  InputFieldMorph, AlignmentMorph, ToggleMorph
+} from './widgets'
+
+import { SyntaxElementMorph, BlockMorph, ScriptsMorph, CommentMorph, CommandBlockMorph
+  , BooleanSlotMorph, TemplateSlotMorph,
+  HatBlockMorph,  ReporterBlockMorph, ArrowMorph,  InputSlotMorph} from './blocks'
+import { VariableFrame, Process} from './threads'
+import {SpriteMorph, StageMorph, WatcherMorph, isSnapObject,Note
+} from './objects'
+import {ListWatcherMorph, List} from './lists'
 modules.byob = '2020-October-07';
 
 // Declarations
 
-var CustomBlockDefinition;
-var CustomCommandBlockMorph;
-var CustomReporterBlockMorph;
-var BlockDialogMorph;
-var BlockEditorMorph;
-var PrototypeHatBlockMorph;
-var BlockLabelFragment;
-var BlockLabelFragmentMorph;
-var BlockInputFragmentMorph;
-var BlockLabelPlaceHolderMorph;
-var InputSlotDialogMorph;
-var VariableDialogMorph;
-var JaggedBlockMorph;
-var BlockExportDialogMorph;
-var BlockImportDialogMorph;
-var BlockRemovalDialogMorph;
+// export var CustomBlockDefinition;
+// var CustomCommandBlockMorph;
+// var CustomReporterBlockMorph;
+// var BlockDialogMorph;
+// var BlockEditorMorph;
+// var PrototypeHatBlockMorph;
+// export var BlockLabelFragment;
+// var BlockLabelFragmentMorph;
+// var BlockInputFragmentMorph;
+// var BlockLabelPlaceHolderMorph;
+// var InputSlotDialogMorph;
+// var variableDialogMorph;
+// var JaggedBlockMorph;
+// var BlockExportDialogMorph;
+// var BlockImportDialogMorph;
+// var BlockRemovalDialogMorph;
 
 // CustomBlockDefinition ///////////////////////////////////////////////
 
 // CustomBlockDefinition instance creation:
 
-function CustomBlockDefinition(spec, receiver) {
+export function CustomBlockDefinition(spec, receiver) {
     this.body = null; // a Context (i.e. a reified top block)
     this.scripts = [];
     this.category = null;
@@ -611,7 +631,7 @@ CustomCommandBlockMorph.prototype.isCustomBlock = true;
 
 // CustomCommandBlockMorph instance creation:
 
-function CustomCommandBlockMorph(definition, isProto) {
+export function CustomCommandBlockMorph(definition, isProto) {
     this.init(definition, isProto);
 }
 
@@ -951,7 +971,7 @@ CustomCommandBlockMorph.prototype.edit = function () {
             null,
             (definition) => {
                 if (definition) { // temporarily update everything
-                    Trace.log('BlockEditor.changeType', this.getDefinitionID());
+                    // Trace.log('BlockEditor.changeType', this.getDefinitionID());
                     hat.blockCategory = definition.category;
                     hat.type = definition.type;
                     this.refreshPrototype();
@@ -1274,12 +1294,12 @@ CustomCommandBlockMorph.prototype.deleteBlockDefinition = function () {
     new DialogBoxMorph(
         this,
         () => {
-            Trace.log('IDE.deleteCustomBlock', this.definition ? {
-                'spec': this.definition.spec,
-                'category': this.definition.category,
-                'type': this.definition.type,
-                'guid': this.definition.guid,
-            } : null);
+            // Trace.log('IDE.deleteCustomBlock', this.definition ? {
+            //     'spec': this.definition.spec,
+            //     'category': this.definition.category,
+            //     'type': this.definition.type,
+            //     'guid': this.definition.guid,
+            // } : null);
             rcvr.deleteAllBlockInstances(method);
             if (method.isGlobal) {
                 stage = rcvr.parentThatIsA(StageMorph);
@@ -1371,7 +1391,7 @@ CustomReporterBlockMorph.prototype.isCustomBlock = true;
 
 // CustomReporterBlockMorph instance creation:
 
-function CustomReporterBlockMorph(definition, isPredicate, isProto) {
+export function CustomReporterBlockMorph(definition, isPredicate, isProto) {
     this.init(definition, isPredicate, isProto);
 }
 
@@ -1519,7 +1539,7 @@ JaggedBlockMorph.uber = ReporterBlockMorph.prototype;
 
 // JaggedBlockMorph instance creation:
 
-function JaggedBlockMorph(spec) {
+export function JaggedBlockMorph(spec) {
     this.init(spec);
 }
 
@@ -1656,7 +1676,7 @@ BlockDialogMorph.uber = DialogBoxMorph.prototype;
 
 // BlockDialogMorph instance creation:
 
-function BlockDialogMorph(target, action, environment) {
+export function BlockDialogMorph(target, action, environment) {
     this.init(target, action, environment);
 }
 
@@ -1697,17 +1717,17 @@ BlockDialogMorph.prototype.init = function (target, action, environment) {
 };
 
 BlockDialogMorph.prototype.prompt = function() {
-    Trace.log('BlockTypeDialog.newBlock');
+    // Trace.log('BlockTypeDialog.newBlock');
     BlockDialogMorph.uber.prompt.apply(this, arguments);
 };
 
 BlockDialogMorph.prototype.ok = function() {
-    Trace.log('BlockTypeDialog.ok');
+    // Trace.log('BlockTypeDialog.ok');
     BlockDialogMorph.uber.ok.apply(this, arguments);
 };
 
 BlockDialogMorph.prototype.cancel = function() {
-    Trace.log('BlockTypeDialog.cancel');
+    // Trace.log('BlockTypeDialog.cancel');
     BlockDialogMorph.uber.cancel.apply(this, arguments);
 };
 
@@ -1719,7 +1739,7 @@ BlockDialogMorph.prototype.openForChange = function (
     pic,
     preventTypeChange // <bool>
 ) {
-    Trace.log('BlockTypeDialog.changeBlockType');
+    // Trace.log('BlockTypeDialog.changeBlockType');
 
     var clr = SpriteMorph.prototype.blockColor[category];
     this.key = 'changeABlock';
@@ -2118,12 +2138,12 @@ BlockEditorMorph.showing = [];
 
 // BlockEditorMorph instance creation:
 
-function BlockEditorMorph(definition, target) {
+export function BlockEditorMorph(definition, target) {
     this.init(definition, target);
 }
 
 BlockEditorMorph.prototype.ok = function() {
-    Trace.log('BlockEditor.ok', this.getDefinitionJSON());
+    // Trace.log('BlockEditor.ok', this.getDefinitionJSON());
     BlockEditorMorph.uber.ok.apply(this, arguments);
 };
 
@@ -2157,7 +2177,7 @@ BlockEditorMorph.prototype.init = function (definition, target) {
     this.translations = definition.translationsAsText();
     this.handle = null;
 
-    Trace.log('BlockEditor.start', this.getDefinitionJSON());
+    // Trace.log('BlockEditor.start', this.getDefinitionJSON());
 
     // initialize inherited properties:
     BlockEditorMorph.uber.init.call(
@@ -2297,7 +2317,7 @@ BlockEditorMorph.prototype.accept = function (origin) {
 
 BlockEditorMorph.prototype.cancel = function (origin) {
     if (origin instanceof CursorMorph) {return; }
-    Trace.log('BlockEditor.cancel', this.getDefinitionJSON());
+    // Trace.log('BlockEditor.cancel', this.getDefinitionJSON());
     //this.refreshAllBlockInstances();
     this.close();
 };
@@ -2409,7 +2429,7 @@ BlockEditorMorph.prototype.deduplicateBlockIDs = function() {
 };
 
 BlockEditorMorph.prototype.updateDefinition = function () {
-    Trace.log('BlockEditor.apply', this.getDefinitionJSON());
+    // Trace.log('BlockEditor.apply', this.getDefinitionJSON());
     var oldSpec = this.definition.blockSpec();
     this.applyToDefinition(this.definition);
     this.refreshAllBlockInstances(oldSpec);
@@ -2617,7 +2637,7 @@ PrototypeHatBlockMorph.uber = HatBlockMorph.prototype;
 
 // PrototypeHatBlockMorph instance creation:
 
-function PrototypeHatBlockMorph(definition) {
+export function PrototypeHatBlockMorph(definition) {
     this.init(definition);
 }
 
@@ -2717,7 +2737,7 @@ PrototypeHatBlockMorph.prototype.enableBlockVars = function (choice) {
 
 // BlockLabelFragment instance creation:
 
-function BlockLabelFragment(labelString) {
+export function BlockLabelFragment(labelString) {
     this.labelString = labelString || '';
     this.type = '%s';    // null for label, a spec for an input
     this.defaultValue = '';
@@ -2889,7 +2909,7 @@ BlockLabelFragmentMorph.uber = StringMorph.prototype;
 
 // BlockLabelFragmentMorph instance creation:
 
-function BlockLabelFragmentMorph(text) {
+export function BlockLabelFragmentMorph(text) {
     this.init(text);
 }
 
@@ -2959,7 +2979,7 @@ BlockLabelFragmentMorph.prototype.mouseClickLeft = function () {
 };
 
 BlockLabelFragmentMorph.prototype.updateBlockLabel = function (newFragment) {
-    Trace.log('BlockEditor.updateBlockLabel', newFragment);
+    // Trace.log('BlockEditor.updateBlockLabel', newFragment);
     var prot = this.parentThatIsA(BlockMorph);
     this.fragment = newFragment;
     if (prot) {
@@ -3017,7 +3037,7 @@ BlockLabelPlaceHolderMorph.prototype.plainLabel = false; // always show (+)
 
 // BlockLabelPlaceHolderMorph instance creation:
 
-function BlockLabelPlaceHolderMorph() {
+export function BlockLabelPlaceHolderMorph() {
     this.init();
 }
 
@@ -3141,7 +3161,7 @@ BlockInputFragmentMorph.uber = TemplateSlotMorph.prototype;
 
 // BlockInputFragmentMorph instance creation:
 
-function BlockInputFragmentMorph(text) {
+export function BlockInputFragmentMorph(text) {
     this.init(text);
 }
 
@@ -3176,7 +3196,7 @@ InputSlotDialogMorph.prototype.isLaunchingExpanded = false;
 
 // InputSlotDialogMorph instance creation:
 
-function InputSlotDialogMorph(
+export function InputSlotDialogMorph(
     fragment,
     target,
     action,
@@ -3895,23 +3915,23 @@ InputSlotDialogMorph.prototype.show = function () {
     this.changed();
 };
 
-// VariableDialogMorph ////////////////////////////////////////////////////
+// variableDialogMorph ////////////////////////////////////////////////////
+//
+// variableDialogMorph inherits from DialogBoxMorph:
 
-// VariableDialogMorph inherits from DialogBoxMorph:
-
-VariableDialogMorph.prototype = new DialogBoxMorph();
-VariableDialogMorph.prototype.constructor = VariableDialogMorph;
-VariableDialogMorph.uber = DialogBoxMorph.prototype;
+variableDialogMorph.prototype = new DialogBoxMorph();
+variableDialogMorph.prototype.constructor = variableDialogMorph;
+variableDialogMorph.uber = DialogBoxMorph.prototype;
 
 // ... and some behavior from BlockDialogMorph
 
-// VariableDialogMorph instance creation:
+// variableDialogMorph instance creation:
 
-function VariableDialogMorph(target, action, environment) {
+export function variableDialogMorph(target, action, environment) {
     this.init(target, action, environment);
 }
 
-VariableDialogMorph.prototype.init = function (target, action, environment) {
+variableDialogMorph.prototype.init = function (target, action, environment) {
     // additional properties:
     this.types = null;
     this.isGlobal = true;
@@ -3930,7 +3950,7 @@ VariableDialogMorph.prototype.init = function (target, action, environment) {
     this.createTypeButtons();
 };
 
-VariableDialogMorph.prototype.createTypeButtons = function () {
+variableDialogMorph.prototype.createTypeButtons = function () {
     this.addTypeButton(
         () => this.setType('global'),
         "for all sprites",
@@ -3943,22 +3963,22 @@ VariableDialogMorph.prototype.createTypeButtons = function () {
     );
 };
 
-VariableDialogMorph.prototype.addTypeButton
+variableDialogMorph.prototype.addTypeButton
     = BlockDialogMorph.prototype.addTypeButton;
 
-VariableDialogMorph.prototype.setType = function (varType) {
+variableDialogMorph.prototype.setType = function (varType) {
     this.isGlobal = (varType === 'global');
     this.types.children.forEach(c => c.refresh());
     this.edit();
 };
 
-VariableDialogMorph.prototype.getInput = function () {
+variableDialogMorph.prototype.getInput = function () {
     // answer a tuple: [varName, isGlobal]
     var name = this.normalizeSpaces(this.body.getValue());
     return name ? [name, this.isGlobal] : null;
 };
 
-VariableDialogMorph.prototype.fixLayout = function () {
+variableDialogMorph.prototype.fixLayout = function () {
     var th = fontHeight(this.titleFontSize) + this.titlePadding * 2;
 
     if (this.body) {
@@ -4028,7 +4048,7 @@ BlockExportDialogMorph.prototype.key = 'blockExport';
 
 // BlockExportDialogMorph instance creation:
 
-function BlockExportDialogMorph(serializer, blocks) {
+export function BlockExportDialogMorph(serializer, blocks) {
     this.init(serializer, blocks);
 }
 
@@ -4204,7 +4224,7 @@ BlockImportDialogMorph.prototype.key = 'blockImport';
 
 // BlockImportDialogMorph instance creation:
 
-function BlockImportDialogMorph(blocks, target, name) {
+export function BlockImportDialogMorph(blocks, target, name) {
     this.init(blocks, target, name);
 }
 
@@ -4294,7 +4314,7 @@ BlockRemovalDialogMorph.prototype.key = 'blockRemove';
 
 // BlockRemovalDialogMorph instance creation:
 
-function BlockRemovalDialogMorph(blocks, target) {
+export function BlockRemovalDialogMorph(blocks, target) {
     this.init(blocks, target);
 }
 

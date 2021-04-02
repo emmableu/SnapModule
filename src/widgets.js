@@ -85,18 +85,27 @@ HTMLCanvasElement, fontHeight, SymbolMorph, localize, SpeechBubbleMorph,
 ArrowMorph, MenuMorph, isString, isNil, SliderMorph, MorphicPreferences,
 ScrollFrameMorph, MenuItemMorph, Note, useBlurredShadows*/
 
+import { TriggerMorph, modules, Color, Point, BoxMorph, radians, ZERO,
+  StringMorph, Morph, TextMorph, nop, detect, StringFieldMorph, BLACK, WHITE,
+   fontHeight, localize, SpeechBubbleMorph,
+   MenuMorph, isString, isNil, SliderMorph, MorphicPreferences,
+  ScrollFrameMorph, MenuItemMorph, useBlurredShadows} from './morphic';
+
+import {SymbolMorph} from "./symbols";
+import {ArrowMorph} from "./blocks";
+
 modules.widgets = '2020-October-06';
 
-var PushButtonMorph;
-var ToggleButtonMorph;
-var TabMorph;
-var ToggleMorph;
-var ToggleElementMorph;
-var DialogBoxMorph;
-var AlignmentMorph;
-var InputFieldMorph;
-var PianoMenuMorph;
-var PianoKeyMorph;
+// var PushButtonMorph;
+// var ToggleButtonMorph;
+// var TabMorph;
+// var ToggleMorph;
+// var ToggleElementMorph;
+// var DialogBoxMorph;
+// var AlignmentMorph;
+// var InputFieldMorph;
+// var PianoMenuMorph;
+// var PianoKeyMorph;
 
 // PushButtonMorph /////////////////////////////////////////////////////
 
@@ -131,7 +140,7 @@ PushButtonMorph.prototype.padding = 3;
 
 // PushButtonMorph instance creation:
 
-function PushButtonMorph(
+export function PushButtonMorph(
     target,
     action,
     labelString,
@@ -516,7 +525,7 @@ ToggleButtonMorph.prototype.labelPressColor = null;
 
 // ToggleButtonMorph instance creation:
 
-function ToggleButtonMorph(
+export function ToggleButtonMorph(
     colors, // color overrides, <array>: [normal, highlight, pressed]
     target,
     action, // a toggle function
@@ -935,7 +944,7 @@ TabMorph.uber = ToggleButtonMorph.prototype;
 
 // TabMorph instance creation:
 
-function TabMorph(
+export function TabMorph(
     colors, // color overrides, <array>: [normal, highlight, pressed]
     target,
     action, // a toggle function
@@ -1058,7 +1067,7 @@ ToggleMorph.uber = PushButtonMorph.prototype;
 
 // ToggleMorph instance creation:
 
-function ToggleMorph(
+export function ToggleMorph(
     style, // 'checkbox' or 'radiobutton'
     target,
     action, // a toggle function
@@ -1296,7 +1305,7 @@ ToggleElementMorph.prototype.inactiveColor = new Color(180, 180, 180);
 
 // ToggleElementMorph instance creation:
 
-function ToggleElementMorph(
+export function ToggleElementMorph(
     target,
     action,
     element,
@@ -1509,7 +1518,7 @@ DialogBoxMorph.prototype.instances = {}; // prevent multiple instances
 
 // DialogBoxMorph instance creation:
 
-function DialogBoxMorph(target, action, environment) {
+export function DialogBoxMorph(target, action, environment) {
     this.init(target, action, environment);
 }
 
@@ -2808,7 +2817,7 @@ AlignmentMorph.uber = Morph.prototype;
 
 // AlignmentMorph instance creation:
 
-function AlignmentMorph(orientation, padding) {
+export function AlignmentMorph(orientation, padding) {
     this.init(orientation, padding);
 }
 
@@ -2890,7 +2899,7 @@ InputFieldMorph.prototype.contrast = 65;
 
 // InputFieldMorph instance creation:
 
-function InputFieldMorph(text, isNumeric, choiceDict, isReadOnly) {
+export function InputFieldMorph(text, isNumeric, choiceDict, isReadOnly) {
     this.init(text, isNumeric, choiceDict, isReadOnly);
 }
 
@@ -3237,7 +3246,7 @@ PianoMenuMorph.uber = MenuMorph.prototype;
 
 // PianoMenuMorph instance creation:
 
-function PianoMenuMorph(target, environment, fontSize, soundType) {
+export function PianoMenuMorph(target, environment, fontSize, soundType) {
     this.init(target, environment, fontSize, soundType);
 }
 
@@ -3485,7 +3494,7 @@ PianoKeyMorph.prototype = new MenuItemMorph();
 PianoKeyMorph.prototype.constructor = PianoKeyMorph;
 PianoKeyMorph.uber = MenuItemMorph.prototype;
 
-function PianoKeyMorph(
+export function PianoKeyMorph(
     target,
     action,
     labelString, // can also be a Morph or a Canvas or a tuple: [icon, string]

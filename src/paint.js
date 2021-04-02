@@ -82,13 +82,15 @@ StageMorph, isNil, SVG_Costume*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
+
+
 modules.paint = '2020-July-13';
 
 // Declarations
 
-var PaintEditorMorph;
-var PaintCanvasMorph;
-var PaintColorPickerMorph;
+// var PaintEditorMorph;
+// var PaintCanvasMorph;
+// var PaintColorPickerMorph;
 
 // PaintEditorMorph //////////////////////////
 
@@ -100,7 +102,7 @@ PaintEditorMorph.uber = DialogBoxMorph.prototype;
 
 PaintEditorMorph.prototype.padding = 10;
 
-function PaintEditorMorph() {
+export function PaintEditorMorph() {
     this.init();
 }
 
@@ -543,7 +545,7 @@ PaintColorPickerMorph.prototype = new Morph();
 PaintColorPickerMorph.prototype.constructor = PaintColorPickerMorph;
 PaintColorPickerMorph.uber = Morph.prototype;
 
-function PaintColorPickerMorph(extent, action) {
+export function PaintColorPickerMorph(extent, action) {
     this.init(extent, action);
 }
 
@@ -616,7 +618,7 @@ PaintCanvasMorph.prototype = new Morph();
 PaintCanvasMorph.prototype.constructor = PaintCanvasMorph;
 PaintCanvasMorph.uber = Morph.prototype;
 
-function PaintCanvasMorph(shift) {
+export function PaintCanvasMorph(shift) {
     this.init(shift);
 }
 

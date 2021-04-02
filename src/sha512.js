@@ -16,7 +16,7 @@
 
 */
 
-var hex_sha512 = (function (hex_sha512) {
+export var hex_sha512 = (function (hex_sha512) {
 
     var hexcase = 0;
 

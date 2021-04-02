@@ -60,7 +60,31 @@ SyntaxElementMorph, Variable, isSnapObject, console, BooleanSlotMorph,
 normalizeCanvas, contains*/
 
 // Global stuff ////////////////////////////////////////////////////////
+import {sb} from './ypr'
 
+import {modules, Morph, Color
+  ,  newCanvas,
+   Point,  normalizeCanvas,
+  contains,  nop, detect,
+  MorphicPreferences, isNil,   localize,
+ sizeOf, } from './morphic'
+import { SyntaxElementMorph, BlockMorph, ScriptsMorph, ArgMorph, CommentMorph, CommandBlockMorph
+  , BooleanSlotMorph, ReporterBlockMorph,
+  InputSlotMorph, TemplateSlotMorph, CommandSlotMorph,
+  FunctionSlotMorph, MultiArgMorph, ColorSlotMorph, ArgLabelMorph
+  , } from './blocks'
+import { VariableFrame, Process, Context,  Variable,
+} from './threads'
+import {SpriteMorph, StageMorph, Costume, SVG_Costume, WatcherMorph, isSnapObject,Note,
+Sound} from './objects'
+import {ListWatcherMorph, List} from './lists'
+import {InputSlotDialogMorph, BlockExportDialogMorph, BlockImportDialogMorph,
+  BlockLabelPlaceHolderMorph,BlockRemovalDialogMorph, BlockEditorMorph, BlockDialogMorph,
+  CustomCommandBlockMorph, CustomReporterBlockMorph, CustomBlockDefinition
+} from './byob'
+import {TableDialogMorph, TableMorph
+} from './tables'
+import {XML_Element} from './xml'
 modules.store = '2020-October-27';
 
 
@@ -75,7 +99,7 @@ modules.store = '2020-October-27';
 
 // XML_Serializer instance creation:
 
-function XML_Serializer() {
+export function XML_Serializer() {
     this.contents = [];
     this.media = [];
     this.isCollectingMedia = false;
@@ -234,7 +258,7 @@ XML_Serializer.prototype.parse = function (xmlString) {
     try {
         element.parseString(xmlString);
     } catch (e) {
-        Trace.log('XML.parseFailed', xmlString);
+        // Trace.log('XML.parseFailed', xmlString);
         throw e;
     }
     return element;
@@ -242,7 +266,7 @@ XML_Serializer.prototype.parse = function (xmlString) {
 
 // SnapSerializer ////////////////////////////////////////////////////////////
 
-var SnapSerializer;
+// export var SnapSerializer;
 
 // SnapSerializer inherits from XML_Serializer:
 
@@ -278,7 +302,7 @@ SnapSerializer.prototype.watcherLabels = {
 
 // SnapSerializer instance creation:
 
-function SnapSerializer() {
+export function SnapSerializer() {
     this.init();
 }
 
