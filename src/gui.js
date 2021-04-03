@@ -115,14 +115,13 @@ import {
 } from './blocks'
 
 import {BlockMorph, ReporterBlockMorph} from './runtime-blocks';
-import {Costume} from './runtime-objects';
-
-
-import {VariableFrame, Context} from './threads'
-import {ThreadManager, Process} from "./runtime-threads";
-import {
-  SpriteMorph, StageMorph, SVG_Costume, WatcherMorph, isSnapObject, Note, Sound,
+import { StageMorph, SVG_Costume, isSnapObject, Note, Sound,
 } from './objects'
+import {Costume, SpriteMorph, SpriteBubbleMorph, CellMorph, WatcherMorph} from './runtime-objects';
+
+
+import {ThreadManager, Process,VariableFrame, Context} from "./runtime-threads";
+
 import {ListWatcherMorph, List} from './lists'
 import {
   InputSlotDialogMorph,
@@ -10319,6 +10318,15 @@ SpriteIconMorph.prototype.flash = function () {
         }
     ));
 };
+
+
+StageMorph.prototype.wantsDropOf = function (aMorph) {
+  return aMorph instanceof SpriteMorph ||
+    aMorph instanceof WatcherMorph ||
+    aMorph instanceof ListWatcherMorph ||
+    aMorph instanceof SpriteIconMorph;
+};
+
 
 // CostumeIconMorph ////////////////////////////////////////////////////
 

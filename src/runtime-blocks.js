@@ -345,6 +345,7 @@ BlockMorph.prototype.codeDefinitionHeader = function () {
   return hat;
 };
 
+
 ReporterBlockMorph.prototype.mouseClickLeft = function (pos) {
   var label,
     myself = this;

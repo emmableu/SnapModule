@@ -53,7 +53,7 @@
         BlockImportDialogMorph
         BlockRemovalDialogMorph
         InputSlotDialogMorph
-        variableDialogMorph
+        VariableDialogMorph
 
     ReporterBlockMorph***
         CustomReporterBlockMorph
@@ -88,7 +88,7 @@
     BlockLabelPlaceHolderMorph
     BlockInputFragmentMorph
     InputSlotDialogMorph
-    variableDialogMorph
+    VariableDialogMorph
     BlockExportDialogMorph
     BlockImportDialogMorph
     BlockRemovalDialogMorph
@@ -143,7 +143,7 @@ modules.byob = '2020-October-07';
 // var BlockInputFragmentMorph;
 // var BlockLabelPlaceHolderMorph;
 // var InputSlotDialogMorph;
-// var variableDialogMorph;
+// var VariableDialogMorph;
 // var JaggedBlockMorph;
 // var BlockExportDialogMorph;
 // var BlockImportDialogMorph;
@@ -3917,23 +3917,23 @@ InputSlotDialogMorph.prototype.show = function () {
     this.changed();
 };
 
-// variableDialogMorph ////////////////////////////////////////////////////
+// VariableDialogMorph ////////////////////////////////////////////////////
 //
-// variableDialogMorph inherits from DialogBoxMorph:
+// VariableDialogMorph inherits from DialogBoxMorph:
 
-variableDialogMorph.prototype = new DialogBoxMorph();
-variableDialogMorph.prototype.constructor = variableDialogMorph;
-variableDialogMorph.uber = DialogBoxMorph.prototype;
+VariableDialogMorph.prototype = new DialogBoxMorph();
+VariableDialogMorph.prototype.constructor = VariableDialogMorph;
+VariableDialogMorph.uber = DialogBoxMorph.prototype;
 
 // ... and some behavior from BlockDialogMorph
 
-// variableDialogMorph instance creation:
+// VariableDialogMorph instance creation:
 
-export function variableDialogMorph(target, action, environment) {
+export function VariableDialogMorph(target, action, environment) {
     this.init(target, action, environment);
 }
 
-variableDialogMorph.prototype.init = function (target, action, environment) {
+VariableDialogMorph.prototype.init = function (target, action, environment) {
     // additional properties:
     this.types = null;
     this.isGlobal = true;
@@ -3952,7 +3952,7 @@ variableDialogMorph.prototype.init = function (target, action, environment) {
     this.createTypeButtons();
 };
 
-variableDialogMorph.prototype.createTypeButtons = function () {
+VariableDialogMorph.prototype.createTypeButtons = function () {
     this.addTypeButton(
         () => this.setType('global'),
         "for all sprites",
@@ -3965,22 +3965,22 @@ variableDialogMorph.prototype.createTypeButtons = function () {
     );
 };
 
-variableDialogMorph.prototype.addTypeButton
+VariableDialogMorph.prototype.addTypeButton
     = BlockDialogMorph.prototype.addTypeButton;
 
-variableDialogMorph.prototype.setType = function (varType) {
+VariableDialogMorph.prototype.setType = function (varType) {
     this.isGlobal = (varType === 'global');
     this.types.children.forEach(c => c.refresh());
     this.edit();
 };
 
-variableDialogMorph.prototype.getInput = function () {
+VariableDialogMorph.prototype.getInput = function () {
     // answer a tuple: [varName, isGlobal]
     var name = this.normalizeSpaces(this.body.getValue());
     return name ? [name, this.isGlobal] : null;
 };
 
-variableDialogMorph.prototype.fixLayout = function () {
+VariableDialogMorph.prototype.fixLayout = function () {
     var th = fontHeight(this.titleFontSize) + this.titlePadding * 2;
 
     if (this.body) {
