@@ -178,7 +178,8 @@ export function CustomBlockDefinition(spec, receiver) {
 	// transient - for "wishes"
     this.storedSemanticSpec = null;
 
-    this.guid = newGuid();
+    // this.guid = newGuid();
+    this.guid = "snap-module";
     this.isImported = false;
 }
 

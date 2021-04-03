@@ -2154,141 +2154,141 @@ SyntaxElementMorph.prototype.isEmptySlot = function () {
 
 // SyntaxElementMorph speech bubble feedback:
 
-SyntaxElementMorph.prototype.showBubble = function (value, exportPic, target) {
-    var bubble,
-        txt,
-        img,
-        morphToShow,
-        isClickable = false,
-        ide = this.parentThatIsA(IDE_Morph),
-        anchor = this,
-        pos = this.rightCenter().add(new Point(2, 0)),
-        sf = this.parentThatIsA(ScrollFrameMorph),
-        wrrld = this.world();
-
-    if ((value === undefined) || !wrrld) {
-        return null;
-    }
-    if (value instanceof ListWatcherMorph) {
-        morphToShow = value;
-        morphToShow.update(true);
-        morphToShow.step = value.update;
-        morphToShow.isDraggable = false;
-        morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
-        isClickable = true;
-    } else if (value instanceof TableFrameMorph) {
-        morphToShow = value;
-        morphToShow.isDraggable = false;
-        morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
-        isClickable = true;
-    } else if (value instanceof Morph) {
-        if (isSnapObject(value)) {
-            img = value.thumbnail(new Point(40, 40));
-            morphToShow = new Morph();
-            morphToShow.isCachingImage = true;
-            morphToShow.bounds.setWidth(img.width);
-            morphToShow.bounds.setHeight(img.height);
-            morphToShow.cachedImage = img;
-            morphToShow.version = value.version;
-            morphToShow.step = function () {
-                if (this.version !== value.version) {
-                    img = value.thumbnail(new Point(40, 40));
-                    this.cachedImage = img;
-                    this.version = value.version;
-                    this.changed();
-                }
-            };
-        } else {
-            img = value.fullImage();
-            morphToShow = new Morph();
-            morphToShow.isCachingImage = true;
-            morphToShow.bounds.setWidth(img.width);
-            morphToShow.bounds.setHeight(img.height);
-            morphToShow.cachedImage = img;
-        }
-    } else if (value instanceof Costume) {
-        img = value.thumbnail(new Point(40, 40));
-        morphToShow = new Morph();
-        morphToShow = new Morph();
-        morphToShow.isCachingImage = true;
-        morphToShow.bounds.setWidth(img.width);
-        morphToShow.bounds.setHeight(img.height);
-        morphToShow.cachedImage = img;
-    } else if (value instanceof Sound) {
-        morphToShow = new SymbolMorph('notes', 30);
-    } else if (value instanceof Context) {
-        img = value.image();
-        morphToShow = new Morph();
-        morphToShow.isCachingImage = true;
-        morphToShow.bounds.setWidth(img.width);
-        morphToShow.bounds.setHeight(img.height);
-        morphToShow.cachedImage = img;
-    } else if (typeof value === 'boolean') {
-        morphToShow = SpriteMorph.prototype.booleanMorph.call(
-            null,
-            value
-        );
-    } else if (isString(value)) {
-        txt  = value.length > 500 ? value.slice(0, 500) + '...' : value;
-        morphToShow = new TextMorph(
-            txt,
-            this.fontSize
-        );
-    } else if (value === null) {
-        morphToShow = new TextMorph(
-            '',
-            this.fontSize
-        );
-    } else if (value === 0) {
-        morphToShow = new TextMorph(
-            '0',
-            this.fontSize
-        );
-    } else if (value.toString) {
-        morphToShow = new TextMorph(
-            value.toString(),
-            this.fontSize
-        );
-    }
-    if (ide && (ide.currentSprite !== target)) {
-        if (target instanceof StageMorph) {
-            anchor = ide.corral.stageIcon;
-        } else if (target) {
-        	if (target.isTemporary) {
-         		target = detect(
-					target.allExemplars(),
-     				each => !each.isTemporary
-         		);
-     		}
-            anchor = detect(
-                ide.corral.frame.contents.children,
-                icon => icon.object === target
-            );
-        } else {
-        	target = ide;
-        }
-        pos = anchor.center();
-    }
-    bubble = new SpeechBubbleMorph(
-        morphToShow,
-        null,
-        Math.max(this.rounding - 2, 6),
-        0
-    );
-    bubble.popUp(
-        wrrld,
-        pos,
-        isClickable
-    );
-    if (exportPic) {
-        this.exportPictureWithResult(bubble);
-    }
-    if (anchor instanceof SpriteIconMorph) {
-        bubble.keepWithin(ide.corral);
-    } else if (sf) {
-        bubble.keepWithin(sf);
-    }
-};
+// SyntaxElementMorph.prototype.showBubble = function (value, exportPic, target) {
+//     var bubble,
+//         txt,
+//         img,
+//         morphToShow,
+//         isClickable = false,
+//         ide = this.parentThatIsA(IDE_Morph),
+//         anchor = this,
+//         pos = this.rightCenter().add(new Point(2, 0)),
+//         sf = this.parentThatIsA(ScrollFrameMorph),
+//         wrrld = this.world();
+//
+//     if ((value === undefined) || !wrrld) {
+//         return null;
+//     }
+//     if (value instanceof ListWatcherMorph) {
+//         morphToShow = value;
+//         morphToShow.update(true);
+//         morphToShow.step = value.update;
+//         morphToShow.isDraggable = false;
+//         morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
+//         isClickable = true;
+//     } else if (value instanceof TableFrameMorph) {
+//         morphToShow = value;
+//         morphToShow.isDraggable = false;
+//         morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
+//         isClickable = true;
+//     } else if (value instanceof Morph) {
+//         if (isSnapObject(value)) {
+//             img = value.thumbnail(new Point(40, 40));
+//             morphToShow = new Morph();
+//             morphToShow.isCachingImage = true;
+//             morphToShow.bounds.setWidth(img.width);
+//             morphToShow.bounds.setHeight(img.height);
+//             morphToShow.cachedImage = img;
+//             morphToShow.version = value.version;
+//             morphToShow.step = function () {
+//                 if (this.version !== value.version) {
+//                     img = value.thumbnail(new Point(40, 40));
+//                     this.cachedImage = img;
+//                     this.version = value.version;
+//                     this.changed();
+//                 }
+//             };
+//         } else {
+//             img = value.fullImage();
+//             morphToShow = new Morph();
+//             morphToShow.isCachingImage = true;
+//             morphToShow.bounds.setWidth(img.width);
+//             morphToShow.bounds.setHeight(img.height);
+//             morphToShow.cachedImage = img;
+//         }
+//     } else if (value instanceof Costume) {
+//         img = value.thumbnail(new Point(40, 40));
+//         morphToShow = new Morph();
+//         morphToShow = new Morph();
+//         morphToShow.isCachingImage = true;
+//         morphToShow.bounds.setWidth(img.width);
+//         morphToShow.bounds.setHeight(img.height);
+//         morphToShow.cachedImage = img;
+//     } else if (value instanceof Sound) {
+//         morphToShow = new SymbolMorph('notes', 30);
+//     } else if (value instanceof Context) {
+//         img = value.image();
+//         morphToShow = new Morph();
+//         morphToShow.isCachingImage = true;
+//         morphToShow.bounds.setWidth(img.width);
+//         morphToShow.bounds.setHeight(img.height);
+//         morphToShow.cachedImage = img;
+//     } else if (typeof value === 'boolean') {
+//         morphToShow = SpriteMorph.prototype.booleanMorph.call(
+//             null,
+//             value
+//         );
+//     } else if (isString(value)) {
+//         txt  = value.length > 500 ? value.slice(0, 500) + '...' : value;
+//         morphToShow = new TextMorph(
+//             txt,
+//             this.fontSize
+//         );
+//     } else if (value === null) {
+//         morphToShow = new TextMorph(
+//             '',
+//             this.fontSize
+//         );
+//     } else if (value === 0) {
+//         morphToShow = new TextMorph(
+//             '0',
+//             this.fontSize
+//         );
+//     } else if (value.toString) {
+//         morphToShow = new TextMorph(
+//             value.toString(),
+//             this.fontSize
+//         );
+//     }
+//     if (ide && (ide.currentSprite !== target)) {
+//         if (target instanceof StageMorph) {
+//             anchor = ide.corral.stageIcon;
+//         } else if (target) {
+//         	if (target.isTemporary) {
+//          		target = detect(
+// 					target.allExemplars(),
+//      				each => !each.isTemporary
+//          		);
+//      		}
+//             anchor = detect(
+//                 ide.corral.frame.contents.children,
+//                 icon => icon.object === target
+//             );
+//         } else {
+//         	target = ide;
+//         }
+//         pos = anchor.center();
+//     }
+//     bubble = new SpeechBubbleMorph(
+//         morphToShow,
+//         null,
+//         Math.max(this.rounding - 2, 6),
+//         0
+//     );
+//     bubble.popUp(
+//         wrrld,
+//         pos,
+//         isClickable
+//     );
+//     if (exportPic) {
+//         this.exportPictureWithResult(bubble);
+//     }
+//     if (anchor instanceof SpriteIconMorph) {
+//         bubble.keepWithin(ide.corral);
+//     } else if (sf) {
+//         bubble.keepWithin(sf);
+//     }
+// };
 
 SyntaxElementMorph.prototype.exportPictureWithResult = function (aBubble) {
     var ide = this.parentThatIsA(IDE_Morph) ||
@@ -6173,40 +6173,40 @@ ReporterBlockMorph.prototype.determineSlotSpec = function () {
 
 // ReporterBlockMorph events
 
-ReporterBlockMorph.prototype.mouseClickLeft = function (pos) {
-    var label,
-        myself = this;
-    if (this.parent instanceof BlockInputFragmentMorph) {
-        return this.parent.mouseClickLeft();
-    }
-    if (this.parent instanceof TemplateSlotMorph) {
-        if (this.parent.parent && this.parent.parent.parent &&
-                this.parent.parent.parent instanceof RingMorph) {
-            label = "Input name";
-        } else if (this.parent.parent.elementSpec === '%blockVars') {
-            label = "Block variable name";
-        } else {
-            label = "Script variable name";
-        }
-        new DialogBoxMorph(
-            this,
-            function(arg) {
-                // Trace.log('TemplateArg.rename', {
-                //     'id': myself.parent.argId(),
-                //     'name': arg,
-                // });
-                myself.userSetSpec(arg);
-            },
-            this
-        ).prompt(
-            label,
-            this.blockSpec,
-            this.world()
-        );
-    } else {
-        ReporterBlockMorph.uber.mouseClickLeft.call(this, pos);
-    }
-};
+// ReporterBlockMorph.prototype.mouseClickLeft = function (pos) {
+//     var label,
+//         myself = this;
+//     if (this.parent instanceof BlockInputFragmentMorph) {
+//         return this.parent.mouseClickLeft();
+//     }
+//     if (this.parent instanceof TemplateSlotMorph) {
+//         if (this.parent.parent && this.parent.parent.parent &&
+//                 this.parent.parent.parent instanceof RingMorph) {
+//             label = "Input name";
+//         } else if (this.parent.parent.elementSpec === '%blockVars') {
+//             label = "Block variable name";
+//         } else {
+//             label = "Script variable name";
+//         }
+//         new DialogBoxMorph(
+//             this,
+//             function(arg) {
+//                 // Trace.log('TemplateArg.rename', {
+//                 //     'id': myself.parent.argId(),
+//                 //     'name': arg,
+//                 // });
+//                 myself.userSetSpec(arg);
+//             },
+//             this
+//         ).prompt(
+//             label,
+//             this.blockSpec,
+//             this.world()
+//         );
+//     } else {
+//         ReporterBlockMorph.uber.mouseClickLeft.call(this, pos);
+//     }
+// };
 
 // ReporterBlockMorph deleting
 

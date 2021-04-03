@@ -2,19 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5084885c-5c00-4250-86d9-3d41a8f34fc5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/runtime-blocks.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/runtime-byob.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/runtime-objects.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/runtime-widgets.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/runtime-threads.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/main.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/blocks.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/blocks.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/byob.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/byob.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/paint.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/paint.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tables.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/tables.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/runtime-blocks.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/runtime-blocks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/threads.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/threads.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

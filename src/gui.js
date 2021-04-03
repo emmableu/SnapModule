@@ -79,15 +79,17 @@ Animation, BoxMorph, BlockEditorMorph, BlockDialogMorph, Note, ZERO, BLACK*/
 // Global stuff ////////////////////////////////////////////////////////
 import {sb} from './ypr'
 
-import {modules, Morph, Color
+import {
+  modules, Morph, Color
   , TextMorph, newCanvas, useBlurredShadows,
   StringMorph, Point, MenuMorph, morphicVersion, normalizeCanvas,
-   contains, ScrollFrameMorph,
-   FrameMorph, nop, ListMorph, detect,
-   MorphicPreferences, isNil, fontHeight,  localize
+  contains, ScrollFrameMorph,
+  FrameMorph, nop, ListMorph, detect,
+  MorphicPreferences, isNil, fontHeight, localize
   , HandleMorph, SpeechBubbleMorph, WHITE, isRetinaEnabled, SliderMorph,
   disableRetinaSupport, enableRetinaSupport, isRetinaSupported,
-  Animation, BoxMorph, ZERO, BLACK} from './morphic'
+  Animation, BoxMorph, ZERO, BLACK, isString
+} from './morphic'
 
 import {SymbolMorph} from './symbols'
 
@@ -95,17 +97,32 @@ import {DialogBoxMorph, ToggleButtonMorph, PushButtonMorph,
   InputFieldMorph, AlignmentMorph, TabMorph, ToggleMorph
  } from './widgets'
 
-import { SyntaxElementMorph, ScriptsMorph, ArgMorph, CommentMorph, CommandBlockMorph
-  , BooleanSlotMorph, RingReporterSlotMorph, ScriptFocusMorph
-  , } from './blocks'
+import {
+  SyntaxElementMorph,
+  ScriptsMorph,
+  ArgMorph,
+  CommentMorph,
+  CommandBlockMorph
+  ,
+  BooleanSlotMorph,
+  RingReporterSlotMorph,
+  ScriptFocusMorph,
+  InputSlotMorph,
+  RingMorph,
+  HatBlockMorph,
+  ReporterSlotMorph, CommandSlotMorph
+  ,
+} from './blocks'
 
-import {BlockMorph} from './runtime-blocks';
+import {BlockMorph, ReporterBlockMorph} from './runtime-blocks';
 import {Costume} from './runtime-objects';
 
 
-import { VariableFrame, Process} from './threads'
-import {SpriteMorph, StageMorph, SVG_Costume, WatcherMorph, isSnapObject,Note,
-      } from './objects'
+import {VariableFrame, Context} from './threads'
+import {ThreadManager, Process} from "./runtime-threads";
+import {
+  SpriteMorph, StageMorph, SVG_Costume, WatcherMorph, isSnapObject, Note, Sound,
+} from './objects'
 import {ListWatcherMorph, List} from './lists'
 import {
   InputSlotDialogMorph,
@@ -117,7 +134,7 @@ import {
   CustomCommandBlockMorph,
   PrototypeHatBlockMorph
 } from './byob'
-import {TableDialogMorph, TableMorph} from './tables'
+import {TableDialogMorph, TableFrameMorph, TableMorph} from './tables'
 import {XML_Element} from './xml'
 import { SnapSerializer} from './store'
 import {SnapTranslater} from './locale'
@@ -9236,6 +9253,589 @@ BlockImportDialogMorph.prototype.importBlocks = function (name) {
 TableDialogMorph.prototype.fixLayout =
   BlockEditorMorph.prototype.fixLayout;
 
+
+SyntaxElementMorph.prototype.showBubble = function (value, exportPic, target) {
+  var bubble,
+    txt,
+    img,
+    morphToShow,
+    isClickable = false,
+    ide = this.parentThatIsA(IDE_Morph),
+    anchor = this,
+    pos = this.rightCenter().add(new Point(2, 0)),
+    sf = this.parentThatIsA(ScrollFrameMorph),
+    wrrld = this.world();
+
+  if ((value === undefined) || !wrrld) {
+    return null;
+  }
+  if (value instanceof ListWatcherMorph) {
+    morphToShow = value;
+    morphToShow.update(true);
+    morphToShow.step = value.update;
+    morphToShow.isDraggable = false;
+    morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
+    isClickable = true;
+  } else if (value instanceof TableFrameMorph) {
+    morphToShow = value;
+    morphToShow.isDraggable = false;
+    morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
+    isClickable = true;
+  } else if (value instanceof Morph) {
+    if (isSnapObject(value)) {
+      img = value.thumbnail(new Point(40, 40));
+      morphToShow = new Morph();
+      morphToShow.isCachingImage = true;
+      morphToShow.bounds.setWidth(img.width);
+      morphToShow.bounds.setHeight(img.height);
+      morphToShow.cachedImage = img;
+      morphToShow.version = value.version;
+      morphToShow.step = function () {
+        if (this.version !== value.version) {
+          img = value.thumbnail(new Point(40, 40));
+          this.cachedImage = img;
+          this.version = value.version;
+          this.changed();
+        }
+      };
+    } else {
+      img = value.fullImage();
+      morphToShow = new Morph();
+      morphToShow.isCachingImage = true;
+      morphToShow.bounds.setWidth(img.width);
+      morphToShow.bounds.setHeight(img.height);
+      morphToShow.cachedImage = img;
+    }
+  } else if (value instanceof Costume) {
+    img = value.thumbnail(new Point(40, 40));
+    morphToShow = new Morph();
+    morphToShow = new Morph();
+    morphToShow.isCachingImage = true;
+    morphToShow.bounds.setWidth(img.width);
+    morphToShow.bounds.setHeight(img.height);
+    morphToShow.cachedImage = img;
+  } else if (value instanceof Sound) {
+    morphToShow = new SymbolMorph('notes', 30);
+  } else if (value instanceof Context) {
+    img = value.image();
+    morphToShow = new Morph();
+    morphToShow.isCachingImage = true;
+    morphToShow.bounds.setWidth(img.width);
+    morphToShow.bounds.setHeight(img.height);
+    morphToShow.cachedImage = img;
+  } else if (typeof value === 'boolean') {
+    morphToShow = SpriteMorph.prototype.booleanMorph.call(
+      null,
+      value
+    );
+  } else if (isString(value)) {
+    txt  = value.length > 500 ? value.slice(0, 500) + '...' : value;
+    morphToShow = new TextMorph(
+      txt,
+      this.fontSize
+    );
+  } else if (value === null) {
+    morphToShow = new TextMorph(
+      '',
+      this.fontSize
+    );
+  } else if (value === 0) {
+    morphToShow = new TextMorph(
+      '0',
+      this.fontSize
+    );
+  } else if (value.toString) {
+    morphToShow = new TextMorph(
+      value.toString(),
+      this.fontSize
+    );
+  }
+  if (ide && (ide.currentSprite !== target)) {
+    if (target instanceof StageMorph) {
+      anchor = ide.corral.stageIcon;
+    } else if (target) {
+      if (target.isTemporary) {
+        target = detect(
+          target.allExemplars(),
+          each => !each.isTemporary
+        );
+      }
+      anchor = detect(
+        ide.corral.frame.contents.children,
+        icon => icon.object === target
+      );
+    } else {
+      target = ide;
+    }
+    pos = anchor.center();
+  }
+  bubble = new SpeechBubbleMorph(
+    morphToShow,
+    null,
+    Math.max(this.rounding - 2, 6),
+    0
+  );
+  bubble.popUp(
+    wrrld,
+    pos,
+    isClickable
+  );
+  if (exportPic) {
+    this.exportPictureWithResult(bubble);
+  }
+  if (anchor instanceof SpriteIconMorph) {
+    bubble.keepWithin(ide.corral);
+  } else if (sf) {
+    bubble.keepWithin(sf);
+  }
+};
+
+
+BlockMorph.prototype.userMenu = function () {
+  var menu = new MenuMorph(this),
+    world = this.world(),
+    myself = this,
+    hasLine = false,
+    shiftClicked = world.currentKey === 16,
+    proc = this.activeProcess(),
+    top = this.topBlock(),
+    vNames = proc && proc.context && proc.context.outerContext ?
+      proc.context.outerContext.variables.names() : [],
+    alternatives,
+    field,
+    rcvr;
+
+  function addOption(label, toggle, test, onHint, offHint) {
+    menu.addItem(
+      [
+        test ? new SymbolMorph(
+          'checkedBox',
+          MorphicPreferences.menuFontSize * 0.75
+        ) : new SymbolMorph(
+          'rectangle',
+          MorphicPreferences.menuFontSize * 0.75
+        ),
+        localize(label)
+      ],
+      toggle,
+      test ? onHint : offHint
+    );
+  }
+
+  function renameVar() {
+    var blck = myself.fullCopy();
+    blck.addShadow();
+    new DialogBoxMorph(
+      myself,
+      function(arg) {
+        // Trace.log('Block.rename', {
+        //     'id': myself.blockId(),
+        //     'name': arg,
+        // });
+        myself.userSetSpec(arg);
+      },
+      myself
+    ).prompt(
+      "Variable name",
+      myself.blockSpec,
+      world,
+      blck.doWithAlpha(1, () => blck.fullImage()), // pic
+      InputSlotMorph.prototype.getVarNamesDict.call(myself)
+    );
+  }
+
+  menu.addItem(
+    "help...",
+    'showHelp'
+  );
+  if (this.isTemplate) {
+    if (this.parent instanceof SyntaxElementMorph) { // in-line
+      if (this.selector === 'reportGetVar') { // script var definition
+        menu.addLine();
+        menu.addItem(
+          'rename...',
+          () => this.refactorThisVar(true), // just the template
+          'rename only\nthis reporter'
+        );
+        menu.addItem(
+          'rename all...',
+          'refactorThisVar',
+          'rename all blocks that\naccess this variable'
+        );
+      }
+    } else { // in palette
+      if (this.selector === 'reportGetVar') {
+        rcvr = this.scriptTarget();
+        if (this.isInheritedVariable(false)) { // fully inherited
+          addOption(
+            'inherited',
+            () => rcvr.toggleInheritedVariable(this.blockSpec),
+            true,
+            'uncheck to\ndisinherit',
+            null
+          );
+        } else { // not inherited
+          if (this.isInheritedVariable(true)) { // shadowed
+            addOption(
+              'inherited',
+              () => rcvr.toggleInheritedVariable(
+                this.blockSpec
+              ),
+              false,
+              null,
+              localize('check to inherit\nfrom')
+              + ' ' + rcvr.exemplar.name
+            );
+          }
+          addOption(
+            'transient',
+            'toggleTransientVariable',
+            this.isTransientVariable(),
+            'uncheck to save contents\nin the project',
+            'check to prevent contents\nfrom being saved'
+          );
+          menu.addLine();
+          menu.addItem(
+            'rename...',
+            () => this.refactorThisVar(true), // just the template
+            'rename only\nthis reporter'
+          );
+          menu.addItem(
+            'rename all...',
+            'refactorThisVar',
+            'rename all blocks that\naccess this variable'
+          );
+        }
+      } else if (this.selector !== 'evaluateCustomBlock') {
+        menu.addItem(
+          "hide",
+          'hidePrimitive'
+        );
+      }
+
+      // allow toggling inheritable attributes
+      if (StageMorph.prototype.enableInheritance) {
+        rcvr = this.scriptTarget();
+        field = {
+          xPosition: 'x position',
+          yPosition: 'y position',
+          direction: 'direction',
+          getScale: 'size',
+          getCostumeIdx: 'costume #',
+          getVolume: 'volume',
+          getPan: 'balance',
+          reportShown: 'shown?',
+          getPenDown: 'pen down?'
+        }[this.selector];
+        if (field && rcvr && rcvr.exemplar) {
+          menu.addLine();
+          addOption(
+            'inherited',
+            () => rcvr.toggleInheritanceForAttribute(field),
+            rcvr.inheritsAttribute(field),
+            'uncheck to\ndisinherit',
+            localize('check to inherit\nfrom')
+            + ' ' + rcvr.exemplar.name
+          );
+        }
+      }
+
+      if (StageMorph.prototype.enableCodeMapping) {
+        menu.addLine();
+        menu.addItem(
+          'header mapping...',
+          'mapToHeader'
+        );
+        menu.addItem(
+          'code mapping...',
+          'mapToCode'
+        );
+      }
+    }
+    return menu;
+  }
+  menu.addLine();
+  if (this.selector === 'reportGetVar') {
+    menu.addItem(
+      'rename...',
+      renameVar,
+      'rename only\nthis reporter'
+    );
+  } else if (SpriteMorph.prototype.blockAlternatives[this.selector]) {
+    menu.addItem(
+      'relabel...',
+      () => this.relabel(
+        SpriteMorph.prototype.blockAlternatives[this.selector]
+      )
+    );
+  } else if (this.isCustomBlock && this.alternatives) {
+    alternatives = this.alternatives();
+    if (alternatives.length > 0) {
+      menu.addItem(
+        'relabel...',
+        () => this.relabel(alternatives)
+      );
+    }
+  }
+
+  // direct relabelling:
+  // - JIT-compile HOFs - experimental
+  // - vector pen trails
+  if (
+    contains(
+      ['reportMap', 'reportKeep', 'reportFindFirst', 'reportCombine'],
+      this.selector
+    )
+  ) {
+    alternatives = {
+      reportMap : 'reportAtomicMap',
+      reportKeep : 'reportAtomicKeep',
+      reportFindFirst: 'reportAtomicFindFirst',
+      reportCombine : 'reportAtomicCombine'
+    };
+    menu.addItem(
+      'compile',
+      () => this.setSelector(alternatives[this.selector]),
+      'experimental!\nmake this reporter fast and uninterruptable\n' +
+      'CAUTION: Errors in the ring\ncan break your Snap! session!'
+    );
+  } else if (
+    contains(
+      [
+        'reportAtomicMap',
+        'reportAtomicKeep',
+        'reportAtomicFindFirst',
+        'reportAtomicCombine'
+      ],
+      this.selector
+    )
+  ) {
+    alternatives = {
+      reportAtomicMap : 'reportMap',
+      reportAtomicKeep : 'reportKeep',
+      reportAtomicFindFirst: 'reportFindFirst',
+      reportAtomicCombine : 'reportCombine'
+    };
+    menu.addItem(
+      'uncompile',
+      () => this.setSelector(alternatives[this.selector])
+    );
+  } else if (
+    contains(
+      ['reportPenTrailsAsCostume', 'reportPentrailsAsSVG'],
+      this.selector
+    )
+  ) {
+    alternatives = {
+      reportPenTrailsAsCostume : 'reportPentrailsAsSVG',
+      reportPentrailsAsSVG : 'reportPenTrailsAsCostume'
+    };
+    menu.addItem(
+      localize(
+        SpriteMorph.prototype.blocks[
+          alternatives[this.selector]
+          ].spec
+      ),
+      () => {
+        this.setSelector(alternatives[this.selector]);
+        this.changed();
+      }
+    );
+  }
+
+  menu.addItem(
+    "duplicate",
+    () => {
+      var dup = this.fullCopy(),
+        ide = this.parentThatIsA(IDE_Morph),
+        blockEditor = this.parentThatIsA(BlockEditorMorph);
+      dup.pickUp(world);
+      // register the drop-origin, so the block can
+      // slide back to its former situation if dropped
+      // somewhere where it gets rejected
+      if (!ide && blockEditor) {
+        ide = blockEditor.target.parentThatIsA(IDE_Morph);
+      }
+      if (ide) {
+        world.hand.grabOrigin = {
+          origin: ide.palette,
+          position: ide.palette.center()
+        };
+      }
+    },
+    'make a copy\nand pick it up'
+  );
+  if (this instanceof CommandBlockMorph && this.nextBlock()) {
+    menu.addItem(
+      (proc ? this.fullCopy() : this).thumbnail(0.5, 60),
+      () => {
+        var cpy = this.fullCopy(),
+          nb = cpy.nextBlock(),
+          ide = this.parentThatIsA(IDE_Morph),
+          blockEditor = this.parentThatIsA(BlockEditorMorph);
+        if (nb) {nb.destroy(); }
+        cpy.pickUp(world);
+        if (!ide && blockEditor) {
+          ide = blockEditor.target.parentThatIsA(IDE_Morph);
+        }
+        if (ide) {
+          world.hand.grabOrigin = {
+            origin: ide.palette,
+            position: ide.palette.center()
+          };
+        }
+      },
+      'only duplicate this block'
+    );
+    menu.addItem(
+      'extract',
+      'userExtractJustThis',
+      'only grab this block'
+    );
+  }
+  menu.addItem(
+    "delete",
+    'userDestroy'
+  );
+  if (isNil(this.comment)) {
+    menu.addItem(
+      "add comment",
+      () => {
+        var comment = new CommentMorph();
+        this.comment = comment;
+        comment.block = this;
+        comment.layoutChanged();
+
+        // Simulate drag/drop for better undo/redo behavior
+        var scripts = this.parentThatIsA(ScriptsMorph),
+          ide = this.parentThatIsA(IDE_Morph),
+          blockEditor = this.parentThatIsA(BlockEditorMorph);
+        if (!ide && blockEditor) {
+          ide = blockEditor.target.parentThatIsA(IDE_Morph);
+        }
+        if (ide) {
+          world.hand.grabOrigin = {
+            origin: ide.palette,
+            position: ide.palette.center()
+          };
+        }
+        scripts.clearDropInfo();
+        scripts.lastDropTarget = { element: this };
+        scripts.lastDroppedBlock = comment;
+        scripts.recordDrop(world.hand.grabOrigin);
+      }
+    );
+  }
+  menu.addItem(
+    "script pic...",
+    () => {
+      // Trace.log('Block.scriptPic', myself.blockId());
+      var ide = this.parentThatIsA(IDE_Morph) ||
+        this.parentThatIsA(BlockEditorMorph).target.parentThatIsA(
+          IDE_Morph
+        );
+      ide.saveCanvasAs(
+        top.scriptPic(),
+        (ide.projectName || localize('untitled')) + ' ' +
+        localize('script pic')
+      );
+    },
+    'save a picture\nof this script'
+  );
+  if (top instanceof ReporterBlockMorph ||
+    (!(top instanceof PrototypeHatBlockMorph) &&
+      top.allChildren().some((any) => any.selector === 'doReport'))
+  ) {
+    menu.addItem(
+      "result pic...",
+      () => top.exportResultPic(),
+      'save a picture of both\nthis script and its result'
+    );
+  }
+  if (shiftClicked) {
+    menu.addItem(
+      'download script',
+      () => {
+        var ide = this.parentThatIsA(IDE_Morph),
+          blockEditor = this.parentThatIsA(BlockEditorMorph);
+        if (!ide && blockEditor) {
+          ide = blockEditor.target.parentThatIsA(IDE_Morph);
+        }
+        if (ide) {
+          ide.saveXMLAs(
+            ide.serializer.serialize(this),
+            this.selector + ' script',
+            false);
+        }
+      },
+      'download this script\nas an XML file',
+      new Color(100, 0, 0)
+    );
+  }
+  if (proc) {
+    if (vNames.length) {
+      menu.addLine();
+      vNames.forEach(vn =>
+        menu.addItem(
+          vn + '...',
+          () => proc.doShowVar(vn)
+        )
+      );
+    }
+    proc.homeContext.variables.names().forEach(vn => {
+      if (!contains(vNames, vn)) {
+        menu.addItem(
+          vn + '...',
+          () => proc.doShowVar(vn)
+        );
+      }
+    });
+    return menu;
+  }
+  if (this.parent.parentThatIsA(RingMorph)) {
+    menu.addLine();
+    menu.addItem("unringify", 'unringify');
+    if (this instanceof ReporterBlockMorph ||
+      (!(top instanceof HatBlockMorph))) {
+      menu.addItem("ringify", 'ringify');
+    }
+    return menu;
+  }
+  if (contains(
+    ['doBroadcast', 'doSend', 'doBroadcastAndWait', 'receiveMessage',
+      'receiveOnClone', 'receiveGo'],
+    this.selector
+  )) {
+    hasLine = true;
+    menu.addLine();
+    menu.addItem(
+      (this.selector.indexOf('receive') === 0 ?
+        "senders..." : "receivers..."),
+      'showMessageUsers'
+    );
+  }
+  if (this.parent instanceof ReporterSlotMorph
+    || (this.parent instanceof CommandSlotMorph)
+    || (this instanceof HatBlockMorph)
+    || (this instanceof CommandBlockMorph
+      && (top instanceof HatBlockMorph))) {
+    return menu;
+  }
+  if (!hasLine) {menu.addLine(); }
+  menu.addItem("ringify", 'ringify');
+  if (StageMorph.prototype.enableCodeMapping) {
+    menu.addLine();
+    menu.addItem(
+      'header mapping...',
+      'mapToHeader'
+    );
+    menu.addItem(
+      'code mapping...',
+      'mapToCode'
+    );
+  }
+  return menu;
+};
 
 // SpriteIconMorph ////////////////////////////////////////////////////
 

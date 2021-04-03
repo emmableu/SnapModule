@@ -1,4 +1,4 @@
-import {SpriteMorph, StageMorph} from "./objects";
+import {Costume, isSnapObject, Sound, SpriteMorph, StageMorph} from "./objects";
 import {
   ArgMorph,
   BlockMorph, CommandBlockMorph,
@@ -9,12 +9,24 @@ import {
   RingMorph, ScriptFocusMorph,
   ScriptsMorph, SyntaxElementMorph, TemplateSlotMorph
 } from "./blocks";
-import {BlockEditorMorph, PrototypeHatBlockMorph} from "./byob";
-import {Color, contains, detect, isNil, localize, MenuMorph, MorphicPreferences, Point} from "./morphic";
+import {BlockInputFragmentMorph, PrototypeHatBlockMorph} from "./byob";
+import {
+  Color,
+  contains,
+  detect,
+  isNil, isString,
+  localize,
+  MenuMorph, Morph,
+  MorphicPreferences,
+  Point,
+  ScrollFrameMorph, SpeechBubbleMorph, TextMorph
+} from "./morphic";
 import {SymbolMorph} from "./symbols";
 import {DialogBoxMorph} from "./widgets";
-import {IDE_Morph} from "./gui";
-import {Process} from "./threads";
+import {IDE_Morph, SpriteIconMorph} from "./gui";
+import {Context, Process} from "./threads";
+import {ListWatcherMorph} from "./lists";
+import {TableFrameMorph} from "./tables";
 
 BlockMorph.prototype.mouseClickLeft = function () {
   var top = this.topBlock(),
@@ -311,452 +323,6 @@ SyntaxElementMorph.prototype.getVarNamesDict = function () {
   return {};
 };
 
-
-BlockMorph.prototype.userMenu = function () {
-  var menu = new MenuMorph(this),
-    world = this.world(),
-    myself = this,
-    hasLine = false,
-    shiftClicked = world.currentKey === 16,
-    proc = this.activeProcess(),
-    top = this.topBlock(),
-    vNames = proc && proc.context && proc.context.outerContext ?
-      proc.context.outerContext.variables.names() : [],
-    alternatives,
-    field,
-    rcvr;
-
-  function addOption(label, toggle, test, onHint, offHint) {
-    menu.addItem(
-      [
-        test ? new SymbolMorph(
-          'checkedBox',
-          MorphicPreferences.menuFontSize * 0.75
-        ) : new SymbolMorph(
-          'rectangle',
-          MorphicPreferences.menuFontSize * 0.75
-        ),
-        localize(label)
-      ],
-      toggle,
-      test ? onHint : offHint
-    );
-  }
-
-  function renameVar() {
-    var blck = myself.fullCopy();
-    blck.addShadow();
-    new DialogBoxMorph(
-      myself,
-      function(arg) {
-        // Trace.log('Block.rename', {
-        //     'id': myself.blockId(),
-        //     'name': arg,
-        // });
-        myself.userSetSpec(arg);
-      },
-      myself
-    ).prompt(
-      "Variable name",
-      myself.blockSpec,
-      world,
-      blck.doWithAlpha(1, () => blck.fullImage()), // pic
-      InputSlotMorph.prototype.getVarNamesDict.call(myself)
-    );
-  }
-
-  menu.addItem(
-    "help...",
-    'showHelp'
-  );
-  if (this.isTemplate) {
-    if (this.parent instanceof SyntaxElementMorph) { // in-line
-      if (this.selector === 'reportGetVar') { // script var definition
-        menu.addLine();
-        menu.addItem(
-          'rename...',
-          () => this.refactorThisVar(true), // just the template
-          'rename only\nthis reporter'
-        );
-        menu.addItem(
-          'rename all...',
-          'refactorThisVar',
-          'rename all blocks that\naccess this variable'
-        );
-      }
-    } else { // in palette
-      if (this.selector === 'reportGetVar') {
-        rcvr = this.scriptTarget();
-        if (this.isInheritedVariable(false)) { // fully inherited
-          addOption(
-            'inherited',
-            () => rcvr.toggleInheritedVariable(this.blockSpec),
-            true,
-            'uncheck to\ndisinherit',
-            null
-          );
-        } else { // not inherited
-          if (this.isInheritedVariable(true)) { // shadowed
-            addOption(
-              'inherited',
-              () => rcvr.toggleInheritedVariable(
-                this.blockSpec
-              ),
-              false,
-              null,
-              localize('check to inherit\nfrom')
-              + ' ' + rcvr.exemplar.name
-            );
-          }
-          addOption(
-            'transient',
-            'toggleTransientVariable',
-            this.isTransientVariable(),
-            'uncheck to save contents\nin the project',
-            'check to prevent contents\nfrom being saved'
-          );
-          menu.addLine();
-          menu.addItem(
-            'rename...',
-            () => this.refactorThisVar(true), // just the template
-            'rename only\nthis reporter'
-          );
-          menu.addItem(
-            'rename all...',
-            'refactorThisVar',
-            'rename all blocks that\naccess this variable'
-          );
-        }
-      } else if (this.selector !== 'evaluateCustomBlock') {
-        menu.addItem(
-          "hide",
-          'hidePrimitive'
-        );
-      }
-
-      // allow toggling inheritable attributes
-      if (StageMorph.prototype.enableInheritance) {
-        rcvr = this.scriptTarget();
-        field = {
-          xPosition: 'x position',
-          yPosition: 'y position',
-          direction: 'direction',
-          getScale: 'size',
-          getCostumeIdx: 'costume #',
-          getVolume: 'volume',
-          getPan: 'balance',
-          reportShown: 'shown?',
-          getPenDown: 'pen down?'
-        }[this.selector];
-        if (field && rcvr && rcvr.exemplar) {
-          menu.addLine();
-          addOption(
-            'inherited',
-            () => rcvr.toggleInheritanceForAttribute(field),
-            rcvr.inheritsAttribute(field),
-            'uncheck to\ndisinherit',
-            localize('check to inherit\nfrom')
-            + ' ' + rcvr.exemplar.name
-          );
-        }
-      }
-
-      if (StageMorph.prototype.enableCodeMapping) {
-        menu.addLine();
-        menu.addItem(
-          'header mapping...',
-          'mapToHeader'
-        );
-        menu.addItem(
-          'code mapping...',
-          'mapToCode'
-        );
-      }
-    }
-    return menu;
-  }
-  menu.addLine();
-  if (this.selector === 'reportGetVar') {
-    menu.addItem(
-      'rename...',
-      renameVar,
-      'rename only\nthis reporter'
-    );
-  } else if (SpriteMorph.prototype.blockAlternatives[this.selector]) {
-    menu.addItem(
-      'relabel...',
-      () => this.relabel(
-        SpriteMorph.prototype.blockAlternatives[this.selector]
-      )
-    );
-  } else if (this.isCustomBlock && this.alternatives) {
-    alternatives = this.alternatives();
-    if (alternatives.length > 0) {
-      menu.addItem(
-        'relabel...',
-        () => this.relabel(alternatives)
-      );
-    }
-  }
-
-  // direct relabelling:
-  // - JIT-compile HOFs - experimental
-  // - vector pen trails
-  if (
-    contains(
-      ['reportMap', 'reportKeep', 'reportFindFirst', 'reportCombine'],
-      this.selector
-    )
-  ) {
-    alternatives = {
-      reportMap : 'reportAtomicMap',
-      reportKeep : 'reportAtomicKeep',
-      reportFindFirst: 'reportAtomicFindFirst',
-      reportCombine : 'reportAtomicCombine'
-    };
-    menu.addItem(
-      'compile',
-      () => this.setSelector(alternatives[this.selector]),
-      'experimental!\nmake this reporter fast and uninterruptable\n' +
-      'CAUTION: Errors in the ring\ncan break your Snap! session!'
-    );
-  } else if (
-    contains(
-      [
-        'reportAtomicMap',
-        'reportAtomicKeep',
-        'reportAtomicFindFirst',
-        'reportAtomicCombine'
-      ],
-      this.selector
-    )
-  ) {
-    alternatives = {
-      reportAtomicMap : 'reportMap',
-      reportAtomicKeep : 'reportKeep',
-      reportAtomicFindFirst: 'reportFindFirst',
-      reportAtomicCombine : 'reportCombine'
-    };
-    menu.addItem(
-      'uncompile',
-      () => this.setSelector(alternatives[this.selector])
-    );
-  } else if (
-    contains(
-      ['reportPenTrailsAsCostume', 'reportPentrailsAsSVG'],
-      this.selector
-    )
-  ) {
-    alternatives = {
-      reportPenTrailsAsCostume : 'reportPentrailsAsSVG',
-      reportPentrailsAsSVG : 'reportPenTrailsAsCostume'
-    };
-    menu.addItem(
-      localize(
-        SpriteMorph.prototype.blocks[
-          alternatives[this.selector]
-          ].spec
-      ),
-      () => {
-        this.setSelector(alternatives[this.selector]);
-        this.changed();
-      }
-    );
-  }
-
-  menu.addItem(
-    "duplicate",
-    () => {
-      var dup = this.fullCopy(),
-        ide = this.parentThatIsA(IDE_Morph),
-        blockEditor = this.parentThatIsA(BlockEditorMorph);
-      dup.pickUp(world);
-      // register the drop-origin, so the block can
-      // slide back to its former situation if dropped
-      // somewhere where it gets rejected
-      if (!ide && blockEditor) {
-        ide = blockEditor.target.parentThatIsA(IDE_Morph);
-      }
-      if (ide) {
-        world.hand.grabOrigin = {
-          origin: ide.palette,
-          position: ide.palette.center()
-        };
-      }
-    },
-    'make a copy\nand pick it up'
-  );
-  if (this instanceof CommandBlockMorph && this.nextBlock()) {
-    menu.addItem(
-      (proc ? this.fullCopy() : this).thumbnail(0.5, 60),
-      () => {
-        var cpy = this.fullCopy(),
-          nb = cpy.nextBlock(),
-          ide = this.parentThatIsA(IDE_Morph),
-          blockEditor = this.parentThatIsA(BlockEditorMorph);
-        if (nb) {nb.destroy(); }
-        cpy.pickUp(world);
-        if (!ide && blockEditor) {
-          ide = blockEditor.target.parentThatIsA(IDE_Morph);
-        }
-        if (ide) {
-          world.hand.grabOrigin = {
-            origin: ide.palette,
-            position: ide.palette.center()
-          };
-        }
-      },
-      'only duplicate this block'
-    );
-    menu.addItem(
-      'extract',
-      'userExtractJustThis',
-      'only grab this block'
-    );
-  }
-  menu.addItem(
-    "delete",
-    'userDestroy'
-  );
-  if (isNil(this.comment)) {
-    menu.addItem(
-      "add comment",
-      () => {
-        var comment = new CommentMorph();
-        this.comment = comment;
-        comment.block = this;
-        comment.layoutChanged();
-
-        // Simulate drag/drop for better undo/redo behavior
-        var scripts = this.parentThatIsA(ScriptsMorph),
-          ide = this.parentThatIsA(IDE_Morph),
-          blockEditor = this.parentThatIsA(BlockEditorMorph);
-        if (!ide && blockEditor) {
-          ide = blockEditor.target.parentThatIsA(IDE_Morph);
-        }
-        if (ide) {
-          world.hand.grabOrigin = {
-            origin: ide.palette,
-            position: ide.palette.center()
-          };
-        }
-        scripts.clearDropInfo();
-        scripts.lastDropTarget = { element: this };
-        scripts.lastDroppedBlock = comment;
-        scripts.recordDrop(world.hand.grabOrigin);
-      }
-    );
-  }
-  menu.addItem(
-    "script pic...",
-    () => {
-      // Trace.log('Block.scriptPic', myself.blockId());
-      var ide = this.parentThatIsA(IDE_Morph) ||
-        this.parentThatIsA(BlockEditorMorph).target.parentThatIsA(
-          IDE_Morph
-        );
-      ide.saveCanvasAs(
-        top.scriptPic(),
-        (ide.projectName || localize('untitled')) + ' ' +
-        localize('script pic')
-      );
-    },
-    'save a picture\nof this script'
-  );
-  if (top instanceof ReporterBlockMorph ||
-    (!(top instanceof PrototypeHatBlockMorph) &&
-      top.allChildren().some((any) => any.selector === 'doReport'))
-  ) {
-    menu.addItem(
-      "result pic...",
-      () => top.exportResultPic(),
-      'save a picture of both\nthis script and its result'
-    );
-  }
-  if (shiftClicked) {
-    menu.addItem(
-      'download script',
-      () => {
-        var ide = this.parentThatIsA(IDE_Morph),
-          blockEditor = this.parentThatIsA(BlockEditorMorph);
-        if (!ide && blockEditor) {
-          ide = blockEditor.target.parentThatIsA(IDE_Morph);
-        }
-        if (ide) {
-          ide.saveXMLAs(
-            ide.serializer.serialize(this),
-            this.selector + ' script',
-            false);
-        }
-      },
-      'download this script\nas an XML file',
-      new Color(100, 0, 0)
-    );
-  }
-  if (proc) {
-    if (vNames.length) {
-      menu.addLine();
-      vNames.forEach(vn =>
-        menu.addItem(
-          vn + '...',
-          () => proc.doShowVar(vn)
-        )
-      );
-    }
-    proc.homeContext.variables.names().forEach(vn => {
-      if (!contains(vNames, vn)) {
-        menu.addItem(
-          vn + '...',
-          () => proc.doShowVar(vn)
-        );
-      }
-    });
-    return menu;
-  }
-  if (this.parent.parentThatIsA(RingMorph)) {
-    menu.addLine();
-    menu.addItem("unringify", 'unringify');
-    if (this instanceof ReporterBlockMorph ||
-      (!(top instanceof HatBlockMorph))) {
-      menu.addItem("ringify", 'ringify');
-    }
-    return menu;
-  }
-  if (contains(
-    ['doBroadcast', 'doSend', 'doBroadcastAndWait', 'receiveMessage',
-      'receiveOnClone', 'receiveGo'],
-    this.selector
-  )) {
-    hasLine = true;
-    menu.addLine();
-    menu.addItem(
-      (this.selector.indexOf('receive') === 0 ?
-        "senders..." : "receivers..."),
-      'showMessageUsers'
-    );
-  }
-  if (this.parent instanceof ReporterSlotMorph
-    || (this.parent instanceof CommandSlotMorph)
-    || (this instanceof HatBlockMorph)
-    || (this instanceof CommandBlockMorph
-      && (top instanceof HatBlockMorph))) {
-    return menu;
-  }
-  if (!hasLine) {menu.addLine(); }
-  menu.addItem("ringify", 'ringify');
-  if (StageMorph.prototype.enableCodeMapping) {
-    menu.addLine();
-    menu.addItem(
-      'header mapping...',
-      'mapToHeader'
-    );
-    menu.addItem(
-      'code mapping...',
-      'mapToCode'
-    );
-  }
-  return menu;
-};
 BlockMorph.prototype.codeDefinitionHeader = function () {
   var block = this.isCustomBlock ? new PrototypeHatBlockMorph(this.definition)
     : SpriteMorph.prototype.blockForSelector(this.selector),
@@ -779,6 +345,40 @@ BlockMorph.prototype.codeDefinitionHeader = function () {
   return hat;
 };
 
+ReporterBlockMorph.prototype.mouseClickLeft = function (pos) {
+  var label,
+    myself = this;
+  if (this.parent instanceof BlockInputFragmentMorph) {
+    return this.parent.mouseClickLeft();
+  }
+  if (this.parent instanceof TemplateSlotMorph) {
+    if (this.parent.parent && this.parent.parent.parent &&
+      this.parent.parent.parent instanceof RingMorph) {
+      label = "Input name";
+    } else if (this.parent.parent.elementSpec === '%blockVars') {
+      label = "Block variable name";
+    } else {
+      label = "Script variable name";
+    }
+    new DialogBoxMorph(
+      this,
+      function(arg) {
+        // Trace.log('TemplateArg.rename', {
+        //     'id': myself.parent.argId(),
+        //     'name': arg,
+        // });
+        myself.userSetSpec(arg);
+      },
+      this
+    ).prompt(
+      label,
+      this.blockSpec,
+      this.world()
+    );
+  } else {
+    ReporterBlockMorph.uber.mouseClickLeft.call(this, pos);
+  }
+};
 
 
-export {BlockMorph};
+export {BlockMorph, ReporterBlockMorph};
