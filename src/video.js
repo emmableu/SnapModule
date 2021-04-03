@@ -40,6 +40,10 @@
 
 // Global stuff ////////////////////////////////////////////////////////
 
+import {modules} from "./morphic";
+import {StageMorph} from "./objects";
+
+
 modules.video = '2019-May-22';
 
 export var VideoMotion;

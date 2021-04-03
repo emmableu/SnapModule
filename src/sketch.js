@@ -60,17 +60,37 @@
 PaintColorPickerMorph, Color, SliderMorph, InputFieldMorph, ToggleMorph,
 TextMorph, Image, newCanvas, PaintEditorMorph, StageMorph, Costume, isNil,
 localize, PaintCanvasMorph, StringMorph, detect, modules*/
+import {
+  Color,
+  detect,
+  isNil, modules,
+  Morph,
+  newCanvas,
+  nop,
+  Point,
+  Rectangle,
+  SliderMorph,
+  StringMorph,
+  TextMorph
+} from "./morphic";
+import {AlignmentMorph, InputFieldMorph, ToggleMorph} from "./widgets";
+import {XML_Element} from "./xml";
+import {PaintCanvasMorph, PaintColorPickerMorph, PaintEditorMorph} from "./paint";
+import {Costume, StageMorph} from "./objects";
+import {localize} from "./locale";
+
+
 
 modules.sketch = '2020-July-13';
 
 // Declarations
 
-export var VectorShape;
-export var VectorRectangle;
-export var VectorLine;
-export var VectorEllipse;
-export var VectorPolygon;
-export var VectorSelection;
+// export var VectorShape;
+// export var VectorRectangle;
+// export var VectorLine;
+// export var VectorEllipse;
+// export var VectorPolygon;
+// export var VectorSelection;
 // var VectorPaintEditorMorph;
 // var VectorPaintCanvasMorph;
 
