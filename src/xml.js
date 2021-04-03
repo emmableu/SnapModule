@@ -67,7 +67,7 @@
 
 // Global stuff ////////////////////////////////////////////////////////
 
-import {modules, detect, isNil} from "./morphic";
+import {modules, detect, isNil, Node} from "./morphic";
 
 modules.xml = '2020-April-27';
 

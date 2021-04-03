@@ -24,7 +24,7 @@ import {
   radians,
   ZERO
 } from "./morphic";
-import {SpriteMorph, StageMorph, StagePrompterMorph, WatcherMorph} from "./objects";
+import {isSnapObject, SpriteMorph, StageMorph, StagePrompterMorph, WatcherMorph} from "./objects";
 
 export function snapEquals(a, b) {
   if (a instanceof List || (b instanceof List)) {
@@ -861,6 +861,8 @@ Process.prototype.errorObsolete = function () {
 // Process Lambda primitives
 
 Process.prototype.reify = function (topBlock, parameterNames, isCustomBlock) {
+  console.log("this: ", this);
+  console.log("this.context: ", this.context);
   var context = new Context(
     null,
     null,

@@ -106,13 +106,15 @@ MorphicPreferences, SymbolMorph, isNil, CursorMorph, VariableFrame,
 WatcherMorph, Variable, BooleanSlotMorph, XML_Serializer, SnapTranslator*/
 
 // Global stuff ////////////////////////////////////////////////////////
-import {modules, Morph, Color,
+import {
+  modules, Morph, Color,
   StringMorph, Point, MenuMorph,
   contains, ScrollFrameMorph,
-   nop, detect,
-  MorphicPreferences, isNil, fontHeight,  localize
+  nop, detect,
+  MorphicPreferences, isNil, fontHeight, localize
   , HandleMorph, WHITE,
-   BoxMorph} from './morphic'
+  BoxMorph, CursorMorph, radians, copy
+} from './morphic'
 
 import {SymbolMorph} from './symbols'
 
@@ -121,13 +123,18 @@ import {
   InputFieldMorph, AlignmentMorph, ToggleMorph, ToggleElementMorph
 } from './widgets'
 
-import { SyntaxElementMorph, BlockMorph, ScriptsMorph, CommentMorph, CommandBlockMorph
+import {
+  SyntaxElementMorph, BlockMorph, ScriptsMorph, CommentMorph, CommandBlockMorph
   , BooleanSlotMorph, TemplateSlotMorph,
-  HatBlockMorph,  ReporterBlockMorph, ArrowMorph,  InputSlotMorph} from './blocks'
-import { VariableFrame, Process} from './threads'
+  HatBlockMorph, ReporterBlockMorph, ArrowMorph, InputSlotMorph, CSlotMorph
+} from './blocks'
+import {VariableFrame, Process, Variable} from './threads'
 import {SpriteMorph, StageMorph, WatcherMorph, isSnapObject,Note
 } from './objects'
 import {ListWatcherMorph, List} from './lists'
+import {XML_Serializer} from "./store";
+import {SnapTranslator} from "./locale";
+
 modules.byob = '2020-October-07';
 
 // Declarations
