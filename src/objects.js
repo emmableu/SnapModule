@@ -7067,13 +7067,13 @@ SpriteMorph.prototype.mouseLeave = function () {
     this.removeHighlight();
 };
 
-SpriteMorph.prototype.wantsDropOf = function (morph) {
-    // allow myself to be the anchor of another sprite
-    // by drag & drop
-    return this.enableNesting
-        && morph instanceof SpriteIconMorph
-        && !contains(morph.object.allParts(), this);
-};
+// SpriteMorph.prototype.wantsDropOf = function (morph) {
+//     // allow myself to be the anchor of another sprite
+//     // by drag & drop
+//     return this.enableNesting
+//         && morph instanceof SpriteIconMorph
+//         && !contains(morph.object.allParts(), this);
+// };
 
 SpriteMorph.prototype.reactToDropOf = function (morph, hand) {
     this.removeHighlight();
@@ -7664,15 +7664,15 @@ StageMorph.prototype.reportMouseY = function () {
 //         aMorph instanceof SpriteIconMorph;
 // };
 
-StageMorph.prototype.reactToDropOf = function (morph, hand) {
-    if (morph instanceof SpriteIconMorph) { // detach sprite from anchor
-        if (morph.object.anchor) {
-            morph.object.anchor.detachPart(morph.object);
-        }
-        this.world().add(morph);
-        morph.slideBackTo(hand.grabOrigin);
-    }
-};
+// StageMorph.prototype.reactToDropOf = function (morph, hand) {
+//     if (morph instanceof SpriteIconMorph) { // detach sprite from anchor
+//         if (morph.object.anchor) {
+//             morph.object.anchor.detachPart(morph.object);
+//         }
+//         this.world().add(morph);
+//         morph.slideBackTo(hand.grabOrigin);
+//     }
+// };
 
 // StageMorph stepping
 
