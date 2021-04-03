@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5084885c-5c00-4250-86d9-3d41a8f34fc5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/sketch.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/sketch.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/video.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/video.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/runtime-threads.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/runtime-threads.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/threads.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/threads.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
