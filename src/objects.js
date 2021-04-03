@@ -116,7 +116,10 @@ import {List} from './lists.js'
 
 import {WorldMap} from './maps'
 import {IDE_Morph} from "./gui";
-
+// import {PaintEditorMorph} from "./paint";
+// import {
+//  variableDialogMorph,
+//   BlockEditorMorph, BlockDialogMorph, PrototypeHatBlockMorph} from "./byob";
 modules.objects = '2020-November-20';
 
 
@@ -2785,44 +2788,44 @@ SpriteMorph.prototype.makeBlockButton = function (category) {
     button.showHelp = BlockMorph.prototype.showHelp;
     return button;
 };
-
-SpriteMorph.prototype.makeBlock = function () {
-    // prompt the user to make a new block
-    var ide = this.parentThatIsA(IDE_Morph),
-        stage = this.parentThatIsA(StageMorph),
-        category = ide.currentCategory,
-        clr = SpriteMorph.prototype.blockColor[category],
-        dlg;
-    dlg = new BlockDialogMorph(
-        null,
-        definition => {
-            if (definition.spec !== '') {
-                if (definition.isGlobal) {
-                    stage.globalBlocks.push(definition);
-                } else {
-                    this.customBlocks.push(definition);
-                }
-                ide.flushPaletteCache();
-                ide.refreshPalette();
-                new BlockEditorMorph(definition, this).popUp();
-            }
-        },
-        this
-    );
-    if (category !== 'variables') {
-        dlg.category = category;
-        dlg.categories.children.forEach(each => each.refresh());
-        dlg.types.children.forEach(each => {
-            each.setColor(clr);
-            each.refresh();
-        });
-    }
-    dlg.prompt(
-        'Make a block',
-        null,
-        this.world()
-    );
-};
+//
+// SpriteMorph.prototype.makeBlock = function () {
+//     // prompt the user to make a new block
+//     var ide = this.parentThatIsA(IDE_Morph),
+//         stage = this.parentThatIsA(StageMorph),
+//         category = ide.currentCategory,
+//         clr = SpriteMorph.prototype.blockColor[category],
+//         dlg;
+//     dlg = new BlockDialogMorph(
+//         null,
+//         definition => {
+//             if (definition.spec !== '') {
+//                 if (definition.isGlobal) {
+//                     stage.globalBlocks.push(definition);
+//                 } else {
+//                     this.customBlocks.push(definition);
+//                 }
+//                 ide.flushPaletteCache();
+//                 ide.refreshPalette();
+//                 new BlockEditorMorph(definition, this).popUp();
+//             }
+//         },
+//         this
+//     );
+//     if (category !== 'variables') {
+//         dlg.category = category;
+//         dlg.categories.children.forEach(each => each.refresh());
+//         dlg.types.children.forEach(each => {
+//             each.setColor(clr);
+//             each.refresh();
+//         });
+//     }
+//     dlg.prompt(
+//         'Make a block',
+//         null,
+//         this.world()
+//     );
+// };
 
 SpriteMorph.prototype.palette = function (category) {
     if (!this.paletteCache[category]) {
@@ -9911,35 +9914,35 @@ Costume.prototype.stretched = function (w, h) {
 
 // Costume actions
 
-Costume.prototype.edit = function (aWorld, anIDE, isnew, oncancel, onsubmit) {
-    var editor = new PaintEditorMorph();
-    editor.oncancel = oncancel || nop;
-    editor.openIn(
-        aWorld,
-        isnew ?
-                newCanvas(StageMorph.prototype.dimensions, true) :
-                this.contents,
-        isnew ?
-                null :
-                this.rotationCenter,
-        (img, rc) => {
-            this.contents = img;
-            this.rotationCenter = rc;
-            this.version = Date.now();
-            aWorld.changed();
-            if (anIDE) {
-                if (anIDE.currentSprite instanceof SpriteMorph) {
-                    // don't shrinkwrap stage costumes
-                    this.shrinkWrap();
-                }
-                anIDE.currentSprite.wearCostume(this, true); // don't shadow
-                anIDE.hasChangedMedia = true;
-            }
-            (onsubmit || nop)();
-        },
-        anIDE
-    );
-};
+// Costume.prototype.edit = function (aWorld, anIDE, isnew, oncancel, onsubmit) {
+//     var editor = new PaintEditorMorph();
+//     editor.oncancel = oncancel || nop;
+//     editor.openIn(
+//         aWorld,
+//         isnew ?
+//                 newCanvas(StageMorph.prototype.dimensions, true) :
+//                 this.contents,
+//         isnew ?
+//                 null :
+//                 this.rotationCenter,
+//         (img, rc) => {
+//             this.contents = img;
+//             this.rotationCenter = rc;
+//             this.version = Date.now();
+//             aWorld.changed();
+//             if (anIDE) {
+//                 if (anIDE.currentSprite instanceof SpriteMorph) {
+//                     // don't shrinkwrap stage costumes
+//                     this.shrinkWrap();
+//                 }
+//                 anIDE.currentSprite.wearCostume(this, true); // don't shadow
+//                 anIDE.hasChangedMedia = true;
+//             }
+//             (onsubmit || nop)();
+//         },
+//         anIDE
+//     );
+// };
 
 Costume.prototype.editRotationPointOnly = function (aWorld, anIDE) {
     var editor = new CostumeEditorMorph(this),

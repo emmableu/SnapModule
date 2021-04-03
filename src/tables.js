@@ -92,7 +92,6 @@ import {Variable} from "./threads";
 import {SpriteMorph, isSnapObject, Costume,  Sound, CellMorph
 } from './objects'
 import {ListWatcherMorph, List} from './lists'
-import {BlockEditorMorph} from './byob'
 
 
 modules.tables = '2020-October-06';
@@ -1304,5 +1303,5 @@ TableDialogMorph.prototype.popUp = function (world) {
     }
 };
 
-TableDialogMorph.prototype.fixLayout =
-    BlockEditorMorph.prototype.fixLayout;
+// TableDialogMorph.prototype.fixLayout =
+//     BlockEditorMorph.prototype.fixLayout;

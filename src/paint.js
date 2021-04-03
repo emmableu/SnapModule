@@ -82,7 +82,30 @@ StageMorph, isNil, SVG_Costume*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-
+import {
+  BoxMorph,
+  Color, getDocumentPositionOf, isNil,
+  modules,
+  Morph, MorphicPreferences,
+  newCanvas,
+  nop,
+  Point,
+  radians,
+  Rectangle,
+  SliderMorph,
+  StringMorph
+} from "./morphic";
+import {
+  AlignmentMorph,
+  DialogBoxMorph,
+  InputFieldMorph,
+  PushButtonMorph,
+  ToggleButtonMorph,
+  ToggleMorph
+} from "./widgets";
+import {SymbolMorph} from "./symbols";
+import {Costume, SpriteMorph, StageMorph, SVG_Costume} from "./objects";
+import {localize} from "./locale";
 
 modules.paint = '2020-July-13';
 

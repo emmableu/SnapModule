@@ -5,3 +5,6 @@
 isnap.min.js*
 snap.min.js*
 .tern-port
+.idea/
+dist/
+node_modules
